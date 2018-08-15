@@ -1,0 +1,26 @@
+Aluno A
+5.5 3.2 1.0
+
+Aluno B
+6.5 7.0 9.0
+
+Aluno C
+2.2 0 10
+
+Aluno D
+5.5 3.2 1.0
+
+Aluno E
+6.5 7.0 9.0
+
+Aluno F
+2.2 0 10
+
+Aluno G
+5.5 3.2 1.0
+
+Aluno H
+6.5 7.0 9.0
+
+Aluno I
+2.2 0 10
