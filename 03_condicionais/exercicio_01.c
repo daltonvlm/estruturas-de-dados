@@ -14,7 +14,7 @@ int main(void)
 
 	if (a > b && a > c) {
 		maior = a;
-	} else if (b > a && b > c) {
+	} else if (b > c) {
 		maior = b;
 	} else {
 		maior = c;
