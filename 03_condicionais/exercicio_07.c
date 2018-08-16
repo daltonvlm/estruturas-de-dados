@@ -12,34 +12,33 @@
 
 int main(void)
 {
-	int usuario, computador;
+	int usuario;
+	int computador;
 
-	printf("pedra (0), papel (1), tesoura (2): ");
+	printf("Esolha pedra (0), papel (1) ou tesoura (2): ");
 	scanf("%d", &usuario);
 
 	srand(time(NULL));
 	computador = rand() % 3;
-	printf("computador: %d ", computador);
-
-	if (0 == computador) {
-		printf("(pedra)\n");
+	if (!computador) {
+		printf("Computador: pedra\n");
 	} else if (1 == computador) {
-		printf("(papel)\n");
+		printf("Computador: papel\n");
 	} else {
-		printf("(tesoura)\n");
+		printf("Computador: tesoura\n");
 	}
 
 	switch (usuario - computador) {
-	case -1:
-	case 2:
-		printf("computador ganhou!\n");
-		break;
-	case 0:
-		printf("empate!\n");
-		break;
 	case 1:
 	case -2:
-		printf("usuario ganhou!\n");
+		puts("Voce (usuario) ganhou!");
+		break;
+	case -1:
+	case 2:
+		puts("Eu (computador) ganhei!");
+		break;
+	default:
+		puts("Empatamos!");
 	}
 	return 0;
 }

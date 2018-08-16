@@ -8,10 +8,8 @@
 int main(void)
 {
 	int a, b, c, maior;
-
 	printf("a, b, c: ");
 	scanf("%d %d %d", &a, &b, &c);
-
 	if (a > b && a > c) {
 		maior = a;
 	} else if (b > c) {

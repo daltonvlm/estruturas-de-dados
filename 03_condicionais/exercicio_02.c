@@ -9,10 +9,8 @@ int main(void)
 {
 	int a, b, c;
 	int maior, medio, menor;
-
 	printf("a, b, c: ");
 	scanf("%d %d %d", &a, &b, &c);
-
 	if (a > b && a > c) {
 		maior = a;
 		medio = b;

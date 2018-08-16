@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
 int main(void)
 {
 	int escolha;		/* escolha do computador: 0=par, 1=ímpar */
@@ -16,14 +15,7 @@ int main(void)
 
 	srand(time(NULL));
 	escolha = rand() % 2;
-	printf("Computador escolheu ");
-
-	if (0 == escolha) {
-		printf("0 (par)\n");
-	} else {
-		printf("1 (impar)\n");
-	}
-
+	printf("Eu (computador) escolhi %s.\n", escolha ? "impar" : "par");
 	printf("Entre com o seu numero: ");
 	scanf("%d", &usuario);
 

@@ -16,13 +16,10 @@
 int main(void)
 {
 	float s0, v0, a, t, s, v;
-
 	printf("s0, v0, a, t: ");
 	scanf("%f %f %f %f", &s0, &v0, &a, &t);
-
 	s = s0 + v0 * t + (a * t * t) / 2;
 	v = v0 + a * t;
-
 	printf("s = %f\n", s);
 	printf("v = %f\n", v);
 	return 0;

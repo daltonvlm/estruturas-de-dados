@@ -18,28 +18,20 @@
 int main(void)
 {
 	float p1, p2, m;
-
+	int aprovado;
 	printf("p1, p2: ");
-	scanf("%f %f", &p1, &p2);
-
-	m = (p1 + p2) / 2.0;
-
-	if (m >= 5.0 && p1 >= 3.0 && p2 >= 3.0)
-		printf("m: %.2f (Aprovado)\n", m);
-	else {
+	scanf("%f%f", &p1, &p2);
+	m = (p1 + p2) / 2;
+	if (m >= 5 && p1 >= 3 && p2 >= 3) {
+		aprovado = 1;
+	} else {
 		float p3;
-
 		printf("p3: ");
 		scanf("%f", &p3);
-
-		m = (p3 + (p1 > p2 ? p1 : p2)) / 2.0;
-		printf("m: %.2f", m);
-
-		if (m >= 5.0) {
-			printf(" (Aprovado)\n");
-		} else {
-			printf(" (Reprovado)\n");
-		}
+		m = (p3 + (p1 > p2 ? p1 : p2)) / 2;
+		aprovado = m >= 5;
 	}
+	printf("Media final: %.1f\n%s\n", m,
+	       aprovado ? "Aprovado" : "Reprovado");
 	return 0;
 }

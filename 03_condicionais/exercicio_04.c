@@ -16,10 +16,8 @@
 int main(void)
 {
 	float r, a, x, y;
-
 	printf("r, a: ");
 	scanf("%f %f", &r, &a);
-
 	x = r * cos(a);
 	y = r * sin(a);
 	printf("(%f, %f)\n", x, y);

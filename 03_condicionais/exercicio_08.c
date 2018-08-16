@@ -33,6 +33,7 @@
 int main(void)
 {
 	int classe, conversao;
+	int erro = 0;
 	float v, r;
 
 	printf("1. Peso\n");
@@ -40,141 +41,87 @@ int main(void)
 	printf("    2. Quilograma -> Libra\n");
 	printf("    3. Onca -> Grama\n");
 	printf("    4. Grama -> Onca\n\n");
-
 	printf("2. Volume\n");
 	printf("    1. Galao -> Litro\n");
 	printf("    2. Litro -> Galao\n");
 	printf("    3. Onca -> Mililitro\n");
 	printf("    4. Mililitro -> Onca\n\n");
-
 	printf("3. Comprimento\n");
 	printf("    1. Milha -> Quilometro\n");
 	printf("    2. Quilometro -> Milha\n");
 	printf("    3. Jardas -> Metro\n");
 	printf("    4. Metro -> Jardas\n\n");
 
-	printf("(1, 2, 3): ");
+	printf("Classe: ");
 	scanf("%d", &classe);
-
-	printf("(1, 2, 3, 4): ");
+	printf("Conversao: ");
 	scanf("%d", &conversao);
+	printf("Valor: ");
+	scanf("%f", &v);
 
 	switch (classe) {
 	case 1:
 		switch (conversao) {
 		case 1:
-			printf("libra: ");
-			scanf("%f", &v);
-
 			r = v * 0.4536;
-
-			printf("quilograma: %f\n", r);
 			break;
-
 		case 2:
-			printf("quilograma: ");
-			scanf("%f", &v);
-
 			r = v / 0.4536;
-
-			printf("libra: %f\n", r);
 			break;
-
 		case 3:
-			printf("onca: ");
-			scanf("%f", &v);
-
 			r = v * 28.3495;
-
-			printf("grama: %f\n", r);
 			break;
-
 		case 4:
-			printf("onca: ");
-			scanf("%f", &v);
-
 			r = v / 28.3495;
-
-			printf("grama: %f\n", r);
+			break;
+		default:
+			erro = 1;
 		}
 		break;
-
 	case 2:
 		switch (conversao) {
 		case 1:
-			printf("galao: ");
-			scanf("%f", &v);
-
 			r = v * 3.7854;
-
-			printf("litro: %f\n", r);
 			break;
-
 		case 2:
-			printf("litro: ");
-			scanf("%f", &v);
-
 			r = v / 3.7854;
-
-			printf("galao: %f\n", r);
 			break;
-
 		case 3:
-			printf("onca: ");
-			scanf("%f", &v);
-
 			r = v * 29.5735;
-
-			printf("mililitro: %f\n", r);
 			break;
-
 		case 4:
-			printf("mililitro: ");
-			scanf("%f", &v);
-
 			r = v / 29.5735;
-
-			printf("onca: %f\n", r);
+			break;
+		default:
+			erro = 1;
 		}
 		break;
-
 	case 3:
 		switch (conversao) {
 		case 1:
-			printf("milha: ");
-			scanf("%f", &v);
-
 			r = v * 1.6093;
-
-			printf("quilometro: %f\n", r);
 			break;
-
 		case 2:
-			printf("quilometro: ");
-			scanf("%f", &v);
-
 			r = v / 1.6093;
-
-			printf("milha: %f\n", r);
 			break;
-
 		case 3:
-			printf("jardas: ");
-			scanf("%f", &v);
-
 			r = v * 0.9144;
-
-			printf("metro: %f\n", r);
 			break;
-
 		case 4:
-			printf("metro: ");
-			scanf("%f", &v);
-
 			r = v / 0.9144;
-
-			printf("jardas: %f\n", r);
+			break;
+		default:
+			erro = 1;
 		}
+		break;
+	default:
+		erro = 2;
+	}
+	if (erro) {
+		printf("Opcao invalida para %s\n",
+		       erro % 2 ? "conversao" : "classe");
+	} else {
+		printf("Valor convertido: %f\n", r);
 	}
 	return 0;
 }
