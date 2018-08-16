@@ -13,17 +13,12 @@ int main(void)
 {
 	float prc_gas, prc_gal, tx;
 	float vlm_gal = 3.7854f;
-
 	printf("preco do galao: ");
 	scanf("%f", &prc_gal);
-
 	printf("taxa de conversao: ");
 	scanf("%f", &tx);
-
 	prc_gal *= tx;
 	prc_gas = prc_gal / vlm_gal;
-
 	printf("preco por litro: R$%.2f\n", prc_gas);
-
 	return 0;
 }

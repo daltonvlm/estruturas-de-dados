@@ -12,19 +12,13 @@ int main(void)
 {
 	int HORA = 3600;
 	int MINUTO = 60;
-
 	int h, m, s;
-
 	printf("t: ");
 	scanf("%d", &s);
-
 	h = s / (HORA);
 	s = s - h * HORA;
-
 	m = s / MINUTO;
 	s = s - m * MINUTO;
-
 	printf("t: %02d:%02d:%05.2f\n", h, m, (float)s);
-
 	return 0;
 }

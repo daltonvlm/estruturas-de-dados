@@ -12,12 +12,9 @@
 int main(void)
 {
 	float r, v;
-
 	printf("r: ");
 	scanf("%f", &r);
-
 	v = 4.0 / 3 * 3.1415 * r * r * r;
 	printf("v: %f\n", v);
-
 	return 0;
 }

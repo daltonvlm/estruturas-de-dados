@@ -10,23 +10,16 @@ int main(void)
 {
 	int g, m, s;
 	float a;
-
 	printf("radiano: ");
 	scanf("%f", &a);
-
 	a *= 57.29578;
-
 	g = a;
 	a -= g;
 	a *= 60;
-
 	m = a;
 	a -= m;
 	a *= 60;
-
 	s = a;
-
 	printf("grau: %ḍ°%d'%d''\n", g, m, s);
-
 	return 0;
 }
