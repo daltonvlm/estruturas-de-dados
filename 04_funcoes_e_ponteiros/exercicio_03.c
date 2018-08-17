@@ -15,7 +15,7 @@
 
 int raizes(double a, double b, double c, double *px1, double *px2)
 {
-	if (!a) {
+	if (0 == a) {
 		*px1 = -c / b;
 		return 1;
 	}
@@ -26,10 +26,10 @@ int raizes(double a, double b, double c, double *px1, double *px2)
 	delta = sqrt(delta);
 	*px1 = (-b - delta) / (2 * a);
 	if (delta) {
-        *px2 = (-b + delta) / (2 * a);
-        return 2;
+		*px2 = (-b + delta) / (2 * a);
+		return 2;
 	}
-    return 1;
+	return 1;
 }
 
 int main(void)
