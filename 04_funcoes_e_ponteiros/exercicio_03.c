@@ -15,26 +15,21 @@
 
 int raizes(double a, double b, double c, double *px1, double *px2)
 {
-	if (0 == a) {
+	if (!a) {
 		*px1 = -c / b;
 		return 1;
 	}
-
 	double delta = b * b - 4 * a * c;
-
 	if (delta < 0) {
 		return 0;
 	}
-
 	delta = sqrt(delta);
 	*px1 = (-b - delta) / (2 * a);
-
-	if (0 == delta) {
-		return 1;
+	if (delta) {
+        *px2 = (-b + delta) / (2 * a);
+        return 2;
 	}
-
-	*px2 = (-b + delta) / (2 * a);
-	return 2;
+    return 1;
 }
 
 int main(void)
@@ -46,7 +41,6 @@ int main(void)
 	printf("a, b, c: ");
 	scanf("%lf %lf %lf", &a, &b, &c);
 	n = raizes(a, b, c, &x1, &x2);
-
 	if (0 == n) {
 		printf("S = {}\n");
 	} else if (1 == n) {
