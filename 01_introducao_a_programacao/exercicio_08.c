@@ -10,13 +10,9 @@ int main(void)
 {
 	float f;
 	float c;
-
 	printf("Entre com a temperatura em Fahrenheit: ");
 	scanf("%f", &f);
-
 	c = (f - 32) / 1.8;
-
 	printf("Temperatura em Celsius: %f\n", c);
-
 	return 0;
 }
