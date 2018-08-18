@@ -39,14 +39,13 @@ void usuario_adivinha(void)
 	int total_palpites = 0;
 	char opcao = 'N';
 
+	srand(time(NULL));
 	do {
-		jogos++;
-		srand(time(NULL));
-
 		int escolha = rand() % (MAX - MIN + 1) + MIN;
 		int palpites = 0;
 		int palpite;
 
+		jogos++;
 		printf("Numero entre %d e %d sorteado, tente adivinhar!\n", MIN,
 		       MAX);
 		do {
@@ -82,18 +81,18 @@ void computador_adivinha(void)
 	char opcao = 'N';
 
 	do {
-		jogos++;
-
 		int escolha;
 		int palpites = 0;
 		int palpite;
 		int min = MIN;
 		int max = MAX;
 
+		jogos++;
 		printf("\nEscolha um numero entre %d e %d: ", MIN, MAX);
 		scanf("%d", &escolha);
-
 		do {
+			int resposta;
+
 			if (min > max) {
 				printf("\nO jogador está trapaceando!");
 				palpites = 1;
@@ -101,8 +100,6 @@ void computador_adivinha(void)
 			}
 			palpites++;
 			palpite = (min + max) / 2;
-
-			int resposta;
 			printf("%d? ", palpite);
 			scanf("%d", &resposta);
 
