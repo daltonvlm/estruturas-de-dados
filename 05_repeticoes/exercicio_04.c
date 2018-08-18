@@ -18,21 +18,22 @@
 
 float raiz(float n, float tol)
 {
-	float x0 = 1.f, x1;
+	float x = 1;
 	do {
-		x1 = (1. / 2) * (x0 + n / x0);
-		x0 = x1;
-	} while (fabs((x1 * x1) - n) >= tol);
-	return x1;
+		x = (x + n / x) / 2;
+	} while (fabs(x * x - n) >= tol);
+	return x;
 }
 
 int main(void)
 {
 	while (1) {
 		float n, tol;
-		printf("\nn, tol: ");
-		scanf("%f %f", &n, &tol);
-		printf("%f\n", raiz(n, tol));
+		printf("n: ");
+		scanf("%f", &n);
+		printf("tol: ");
+		scanf("%f", &tol);
+		printf("raiz = %f\n", raiz(n, tol));
 	}
 	return 0;
 }
