@@ -17,9 +17,7 @@ int pares(int n, int *vet)
 {
 	int np = 0;
 	for (int i = 0; i < n; i++) {
-		if (vet[i] % 2 == 0) {
-			np++;
-		}
+		np += !(vet[i] % 2);
 	}
 	return np;
 }
@@ -27,17 +25,12 @@ int pares(int n, int *vet)
 int main(void)
 {
 	int vet[N];
-
 	srand(time(NULL));
 	for (int i = 0; i < N; i++) {
-		vet[i] = rand() % 100;
-	}
-
-	for (int i = 0; i < N; i++) {
+		vet[i] = rand() % N;
 		printf("%d ", vet[i]);
 	}
 	puts("");
-
 	printf("Pares: %d\n", pares(N, vet));
 	return 0;
 }

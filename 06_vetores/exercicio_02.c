@@ -25,20 +25,16 @@ void inverte(int n, int *vet)
 int main(void)
 {
 	int v[N];
-
 	srand(time(NULL));
 	for (int i = 0; i < N; i++) {
-		v[i] = rand() % 100;
+		v[i] = rand() % N;
 		printf("%d ", v[i]);
 	}
 	puts("");
-
 	inverte(N, v);
-
 	for (int i = 0; i < N; i++) {
 		printf("%d ", v[i]);
 	}
 	puts("");
-
 	return 0;
 }

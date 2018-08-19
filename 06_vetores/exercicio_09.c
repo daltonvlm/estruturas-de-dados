@@ -13,10 +13,8 @@
 
 void soma(int na, float *a, int nb, float *b, float *c)
 {
-	int min = na < nb ? na : nb;
 	int i;
-
-	for (i = 0; i < min; i++) {
+	for (i = 0; i < na && i < nb; i++) {
 		c[i] = a[i] + b[i];
 	}
 	for (; i < na; i++) {
@@ -29,12 +27,11 @@ void soma(int na, float *a, int nb, float *b, float *c)
 
 void produto(int na, float *a, int nb, float *b, float *c)
 {
-	int max = na > nb ? na : nb;
-	int m = 2 * max - 1;
-	for (int k = 0; k < m; k++) {
-		c[k] = .0f;
+	int nc = 2 * (na > nb ? na : nb) - 1;
+	for (int k = 0; k < nc; k++) {
+		c[k] = 0;
 		for (int i = 0; i <= k; i++) {
-			if (i < na && k - i < nb) {
+			if (i < na && (k - i) < nb) {
 				c[k] += a[i] * b[k - i];
 			}
 		}
@@ -50,7 +47,7 @@ static void imprime(int n, float *v)
 	puts("");
 }
 
-static void preenche(int n, float *v)
+static void popula(int n, float *v)
 {
 	for (int i = 0; i < n; i++) {
 		v[i] = rand() % 10 + 1;
@@ -59,25 +56,25 @@ static void preenche(int n, float *v)
 
 int main(void)
 {
-	int na, nb, maior;
+	int na, nb, nc;
 	float a[N], b[N], c[2 * N - 1] = { 0 };
 
 	srand(time(NULL));
 	na = rand() % N + 1;
 	nb = rand() % N + 1;
-	maior = na > nb ? na : nb;
+	nc = na > nb ? na : nb;
 
-	preenche(na, a);
-	preenche(nb, b);
+	popula(na, a);
 	imprime(na, a);
+	popula(nb, b);
 	imprime(nb, b);
 
 	printf("soma: ");
 	soma(na, a, nb, b, c);
-	imprime(maior, c);
+	imprime(nc, c);
 
 	printf("produto: ");
 	produto(na, a, nb, b, c);
-	imprime(2 * maior - 1, c);
+	imprime(nc, c);
 	return 0;
 }

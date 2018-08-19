@@ -12,7 +12,13 @@
  *      int testa_PA (int n, int *v);
  */
 
+/* A questão apresenta um erro conceitual, pois uma sequência constituida de 0s é também
+ * uma PA. No entanto, da maneira como a questão está formulada, um retorno de 0 implicaria
+ * que a sequência não constitui uma PA.
+ */
+
 #include <stdio.h>
+#include <stdlib.h>
 
 #define N 10
 
@@ -20,33 +26,32 @@ int testa_PA(int n, int *v)
 {
 	int k = v[1] - v[0];
 	for (int i = 2; i < n; i++) {
-		if (v[i] != v[0] + k * i) {
+		if (v[i] != v[0] + i * k) {
 			return 0;
 		}
 	}
-	return 1;
+	return k;
 }
 
 int main(void)
 {
+	int vet[N];
 	while (1) {
-		int pa, n, v[N];
-
-		printf("\nn: ");
+		int n;
+		printf("Entre com o numero de elementos (valor maximo = %d): ",
+		       N);
 		scanf("%d", &n);
-
-		if (n > N) {
-			printf("Entre com um valor menor ou igual a %d\n", N);
+		if (n < 0 || n > N) {
+			fprintf(stderr, "Entrada invalida.\n");
 			continue;
+		} else if (!n) {
+			break;
 		}
-
-		printf("valores: ");
+		puts("Entre com os valores:");
 		for (int i = 0; i < n; i++) {
-			scanf("%d", &v[i]);
+			scanf("%d", vet + i);
 		}
-
-		pa = testa_PA(n, v);
-		printf("pa = %d\n", pa);
+		printf("%s\n", testa_PA(n, vet) ? "E PA" : "Nao e PA");
 	}
 	return 0;
 }

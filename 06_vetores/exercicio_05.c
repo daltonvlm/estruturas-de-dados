@@ -28,16 +28,13 @@ float harmonica(int n, float *v)
 int main(void)
 {
 	float hn, v[N];
-
 	srand(time(NULL));
 	for (int i = 0; i < N; i++) {
 		v[i] = rand() % 100 + 1;
 		printf("%.2f ", v[i]);
 	}
 	puts("");
-
 	hn = harmonica(N, v);
 	printf("Hn = %f\n", hn);
-
 	return 0;
 }

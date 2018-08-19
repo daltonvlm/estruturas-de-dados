@@ -14,49 +14,25 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
-#define N 5
+#define N 6
 
 float ponderada(int n, float *v, float *w)
 {
-	float num = .0f;
-	float den = .0f;
+	float p = 0;
+	float s = 0;
 	for (int i = 0; i < n; i++) {
-		num += v[i] * w[i];
-		den += w[i];
+		p += v[i] * w[i];
+		s += w[i];
 	}
-	return num / den;
-}
-
-static void preenche(int n, float *v, int min, int max)
-{
-	for (int i = 0; i < n; i++) {
-		v[i] = rand() % (max - min) + min;
-	}
-}
-
-static void imprime(int n, float *v)
-{
-	for (int i = 0; i < n; i++) {
-		printf("%5.2f ", v[i]);
-	}
-	puts("");
+	return p / s;
 }
 
 int main(void)
 {
-	float mp;
-	float v[N], w[N];
-
-	srand(time(NULL));
-	preenche(N, v, 0, 11);
-	preenche(N, w, 1, 101);
-
-	imprime(N, v);
-	imprime(N, w);
-
-	mp = ponderada(N, v, w);
-	printf("mp = %.2f\n", mp);
+	float notas[N] = { 6.0f, 8.9f, 8.8f, 7.0f, 6.4f, 9.4f };
+	float pesos[N] = { 68.f, 68.f, 102.f, 68.f, 102.f, 60.f };
+	float cr = ponderada(N, notas, pesos);
+	printf("CR = %.1f\n", cr);
 	return 0;
 }

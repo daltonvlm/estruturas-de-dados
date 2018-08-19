@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define N 3
+#define N 5
 
 int identidade(double A[][N])
 {
@@ -21,7 +21,7 @@ int identidade(double A[][N])
 			return 0;
 		}
 		for (int j = 0; j < i; j++) {
-			if (A[i][j] != 0 || A[j][i] != 0) {
+			if (A[i][j] || A[j][i]) {
 				return 0;
 			}
 		}
@@ -29,11 +29,11 @@ int identidade(double A[][N])
 	return 1;
 }
 
-static void imprime(double A[][N])
+void imprime(double A[][N])
 {
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) {
-			printf("%5.2f ", A[i][j]);
+			printf("%.1f ", A[i][j]);
 		}
 		puts("");
 	}
@@ -41,25 +41,22 @@ static void imprime(double A[][N])
 
 int main(void)
 {
+	double mat[N][N];
 	srand(time(NULL));
-
 	puts("\nGerando matriz identidade...");
 	while (1) {
-		int max = 6;
-		double m[N][N];
-
 		for (int i = 0; i < N; i++) {
-			m[i][i] = rand() % max;
+			mat[i][i] = rand() % 2;
 			for (int j = 0; j < i; j++) {
-				m[i][j] = rand() % max;
-				m[j][i] = rand() % max;
+				mat[i][j] = rand() % 2;
+				mat[j][i] = rand() % 2;
 			}
 		}
-
-		if (identidade(m)) {
-			imprime(m);
+		if (identidade(mat)) {
+			imprime(mat);
+			printf("\nTecle Enter para continuar: ");
 			getchar();
-			puts("Gerando matriz identidade...");
+			puts("\nGerando matriz identidade...");
 		}
 	}
 	return 0;

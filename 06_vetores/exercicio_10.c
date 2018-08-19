@@ -23,44 +23,30 @@
  */
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
-#define N 20
 
 void histograma(int n, float *v, int *h)
 {
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < 10; j++) {
-			if (v[i] < j * .1 + .1) {
-				h[j]++;
-				break;
-			}
-		}
+		int x = 10 * v[i];
+		h[x]++;
 	}
 }
 
 int main(void)
 {
-	float v[N];
+	float v[12] =
+	    { 0.11, 0.2, 0.03, 0.56, 0.323, 0.345, 0.234, 0.56, 0.6546, 0.123,
+		0.123, 0.999
+	};
 	int h[10] = { 0 };
-
-	srand(time(NULL));
-
-	for (int i = 0; i < N; i++) {
-		int n1 = rand();
-		int n2 = rand();
-
-		v[i] = (float)(n1 < n2 ? n1 : n2) / (n1 > n2 ? n1 : n2);
-		printf("%.2f ", v[i]);
-	}
-	puts("");
-
-	histograma(N, v, h);
+	histograma(12, v, h);
 	for (int i = 0; i < 10; i++) {
-		printf("%d ", h[i]);
+		printf("%.1f\t", i / 10.);
 	}
 	puts("");
-
+	for (int i = 0; i < 10; i++) {
+		printf("%3d\t", h[i]);
+	}
+	puts("");
 	return 0;
 }

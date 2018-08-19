@@ -12,8 +12,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include <math.h>
+#include <time.h>
 
 #define N 10
 
@@ -24,9 +24,7 @@ float geometrica(int n, float *v)
 		p *= v[i];
 	}
 	if (p < 0) {
-		printf
-		    ("Erro, calculo de raiz com radicando negativo nao suportado: %f\n",
-		     p);
+		printf("Erro: raiz com radicando negativo: %f\n", p);
 		return 0;
 	}
 	return powf(p, 1. / n);
@@ -35,16 +33,13 @@ float geometrica(int n, float *v)
 int main(void)
 {
 	float gn, v[N];
-
 	srand(time(NULL));
 	for (int i = 0; i < N; i++) {
 		v[i] = rand() % 100;
 		printf("%.2f ", v[i]);
 	}
 	puts("");
-
 	gn = geometrica(N, v);
 	printf("Gn = %2.f\n", gn);
-
 	return 0;
 }

@@ -39,14 +39,12 @@ void imprime(double A[][N])
 
 int main(void)
 {
+	int max = 400;
+	double m[N][N];
+
 	srand(time(NULL));
-
-	puts("\nGerando matriz triangular...");
-
+	puts("\nGerando matriz triangular inferior...");
 	while (1) {
-		int max = 400;
-		double m[N][N];
-
 		for (int i = 0; i < N; i++) {
 			m[i][i] = rand() % max;
 			for (int j = 0; j < i; j++) {
@@ -54,11 +52,11 @@ int main(void)
 				m[j][i] = rand() % max;
 			}
 		}
-
 		if (triangular_inferior(m)) {
 			imprime(m);
+			printf("\nTecle Enter para continuar: ");
 			getchar();
-			puts("Gerando matriz triangular...");
+			puts("\nGerando matriz triangular inferior...");
 		}
 	}
 }

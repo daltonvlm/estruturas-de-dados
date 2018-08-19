@@ -27,16 +27,13 @@ int main(void)
 {
 	float min;
 	float v[N];
-
 	srand(time(NULL));
 	for (int i = 0; i < N; i++) {
 		v[i] = rand() % 100;
 		printf("%.2f ", v[i]);
 	}
 	puts("");
-
 	min = minimo(N, v);
 	printf("min = %.2f\n", min);
-
 	return 0;
 }
