@@ -27,75 +27,51 @@
  */
 
 /* 
- * Acredito que alguns cabeçalhos das funções apresentadas no enunciado estejam incompletos.
+ * Alguns cabeçalhos estão incompletos.
  * No entanto, creio que seja possível inferir a intenção do autor.
  */
 
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
-float **ti_cria(int n);
-void ti_atribui(int i, int j, float **mat, float x);
-float ti_acessa(int i, int j, float **mat);
-void ti_libera(int n, float **mat);
-
-int main(void)
+static void check(void *p)
 {
-	int n = 4;
-	float **mat = ti_cria(n);
-
-	for (int i = 0, c = 1; i < n; i++) {
-		for (int j = 0; j < n; j++, c++) {
-			ti_atribui(i, j, mat, c);
-		}
+	if (!p) {
+		perror("Erro");
+		exit(EXIT_FAILURE);
 	}
+}
 
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			printf("%5.2f ", ti_acessa(i, j, mat));
-		}
-		puts("");
-	}
-
-	ti_libera(n, mat);
-	return 0;
+static void *aloca(size_t n)
+{
+	void *p = malloc(n);
+	check(p);
+	return p;
 }
 
 float **ti_cria(int n)
 {
-	float **mat = (float **)malloc(n * sizeof(float *));
-
-	if (mat != NULL) {
-		for (int i = 0; i < n; i++) {
-
-			mat[i] = (float *)malloc((n - i) * sizeof(int));
-			if (NULL == mat[i]) {
-				ti_libera(i, mat);
-				mat = NULL;
-				break;
-			}
-
-			for (int j = 0; j < n - i; j++) {
-				mat[i][j] = 0;
-			}
+	float **mat = (float **)aloca(n * sizeof(float *));
+	for (int i = 0; i < n; i++) {
+		mat[i] = (float *)aloca((i + 1) * sizeof(float));
+		for (int j = 0; j <= i; j++) {
+			mat[i][j] = 0;
 		}
 	}
 	return mat;
 }
 
-void ti_atribui(int i, int j, float **mat, float x)
+void ti_atribui(int i, int j, float x, float **mat)
 {
-	if (i <= j) {
-		mat[i][j - i] = x;
+	if (i >= j) {
+		mat[i][j] = x;
 	}
 }
 
 float ti_acessa(int i, int j, float **mat)
 {
-	if (i > j) {
-		return 0;
-	}
-	return mat[i][j - i];
+	return i >= j ? mat[i][j] : 0;
 }
 
 void ti_libera(int n, float **mat)
@@ -104,4 +80,27 @@ void ti_libera(int n, float **mat)
 		free(mat[i]);
 	}
 	free(mat);
+}
+
+int main(void)
+{
+	int n = 3;
+	float **mat = (float **)ti_cria(n);
+
+	srand(time(NULL));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			int x = rand() % 10;
+			printf("Gerado valor %d\n", x);
+			ti_atribui(i, j, x, mat);
+		}
+	}
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			printf("%.1f ", ti_acessa(i, j, mat));
+		}
+		puts("");
+	}
+	ti_libera(n, mat);
+	return 0;
 }

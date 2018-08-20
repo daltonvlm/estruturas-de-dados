@@ -8,49 +8,71 @@
  *      int* somente_pares (int n, int* v, int* npares);
  */
 
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-#define N 10
+static void check(void *p)
+{
+	if (!p) {
+		perror("Erro:");
+		exit(EXIT_FAILURE);
+	}
+}
+
+static void *aloca(size_t n)
+{
+	void *p = malloc(n);
+	check(p);
+	return p;
+}
 
 int *somente_pares(int n, int *v, int *npares)
 {
-	int c = 0;
-	int *p = NULL;
-
+	int *pares;
+	*npares = 0;
 	for (int i = 0; i < n; i++) {
-		if (v[i] % 2 == 0) {
-			c++;
+		if (!(v[i] % 2)) {
+			(*npares)++;
 		}
 	}
-
-	if (c > 0) {
-		p = (int *)malloc(sizeof(int));
-		if (NULL != p) {
-			for (int i = 0, j = 0; j < n; j++) {
-				if (v[j] % 2 == 0) {
-					p[i++] = v[j];
-				}
-			}
+	pares = (int *)aloca((*npares) * sizeof(int));
+	for (int i = 0, k = 0; i < n; i++) {
+		if (!(v[i] % 2)) {
+			pares[k] = v[i];
+			k++;
 		}
 	}
+	return pares;
+}
 
-	*npares = c;
-	return p;
+static void popula(int n, int *v)
+{
+	puts("Entre com os valores:");
+	for (int i = 0; i < n; i++) {
+		scanf("%d", v + i);
+	}
+}
+
+static void imprime(int n, int *v, char *fmt, char *end)
+{
+	for (int i = 0; i < n; i++) {
+		printf(fmt, v[i]);
+	}
+	printf(end);
 }
 
 int main(void)
 {
-	int np, *p;
-	int v[N] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-
-	p = somente_pares(N, v, &np);
-
-	for (int i = 0; i < np; i++) {
-		printf("%d ", p[i]);
+	int *v, *pares;
+	int n, npares;
+	while (1) {
+		printf("Entre com o tamanho do vetor: ");
+		scanf("%d", &n);
+		v = (int *)aloca(n * sizeof(int));
+		popula(n, v);
+		pares = somente_pares(n, v, &npares);
+		imprime(npares, pares, "%d ", "\n");
+		free(pares);
 	}
-	puts("");
-
-	free(p);
 	return 0;
 }

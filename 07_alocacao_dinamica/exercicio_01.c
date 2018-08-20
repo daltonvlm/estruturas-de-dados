@@ -10,35 +10,62 @@
  * liberar a memória alocada pela função auxiliar.
  */
 
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+static void check(void *p)
+{
+	if (!p) {
+		perror("Erro:");
+		exit(EXIT_FAILURE);
+	}
+}
+
+static void *aloca(size_t n)
+{
+	void *p = malloc(n);
+	check(p);
+	return p;
+}
 
 float *reverso(int n, float *v)
 {
-	float *r = (float *)malloc(n * sizeof(float));
-
-	if (NULL != r) {
-		for (int i = 0; i < n; i++) {
-			r[i] = v[n - 1 - i];
-		}
+	float *r = (float *)aloca(n * sizeof(float));
+	for (int i = 0; i < n; i++) {
+		printf("%f\n", v[n - 1 - i]);
+		r[i] = v[n - 1 - i];
 	}
 	return r;
 }
 
-#define N 10
+static void popula(int n, float *v)
+{
+	puts("Entre com os valores:");
+	for (int i = 0; i < n; i++) {
+		scanf("%f", v + i);
+	}
+}
+
+static void imprime(int n, float *v, char *fmt, char *end)
+{
+	for (int i = 0; i < n; i++) {
+		printf(fmt, v[i]);
+	}
+	printf(end);
+}
 
 int main(void)
 {
-	float v[N] = { 0.f, 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f, 9.f };
-	float *r = reverso(N, v);
-
-	if (r != NULL) {
-		for (int i = 0; i < N; i++) {
-			printf("%.2f ", r[i]);
-		}
-		puts("");
+	int n;
+	float *v, *r;
+	while (1) {
+		printf("Entre com o tamanho do vetor: ");
+		scanf("%d", &n);
+		v = (float *)aloca(n * sizeof(float));
+		popula(n, v);
+		r = reverso(n, v);
+		imprime(n, r, "%.2f ", "\n");
 		free(r);
 	}
-
 	return 0;
 }

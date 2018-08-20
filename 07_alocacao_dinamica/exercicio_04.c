@@ -4,73 +4,47 @@
  * transposto aos elementos.
  */
 
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
-float **ts_cria(int n);
-void ts_atribui(int i, int j, float **mat, float x);
-float ts_acessa(int i, int j, float **mat);
-void ts_libera(int n, float **mat);
-
-int main(void)
+static void check(void *p)
 {
-	int n = 4;
-	float **mat = ts_cria(n);
-
-	if (mat != NULL) {
-		for (int i = 0, c = 1; i < n; i++) {
-			for (int j = 0; j < n; j++, c++) {
-				ts_atribui(i, j, mat, c);
-			}
-		}
-
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				printf("%5.2f ", ts_acessa(i, j, mat));
-			}
-			puts("");
-		}
-
-		ts_libera(n, mat);
+	if (!p) {
+		perror("Erro");
+		exit(EXIT_FAILURE);
 	}
-	return 0;
+}
+
+static void *aloca(size_t n)
+{
+	void *p = malloc(n);
+	check(p);
+	return p;
 }
 
 float **ts_cria(int n)
 {
-	float **mat = (float **)malloc(n * sizeof(float *));
-
-	if (NULL != mat) {
-		for (int i = 0; i < n; i++) {
-			mat[i] = (float *)malloc((i + 1) * sizeof(float));
-
-			if (NULL == mat[i]) {
-				ts_libera(i, mat);
-				mat = NULL;
-				break;
-			}
-
-			for (int j = 0; j <= i; j++) {
-				mat[i][j] = 0;
-			}
+	float **mat = (float **)aloca(n * sizeof(float *));
+	for (int i = 0; i < n; i++) {
+		mat[i] = (float *)aloca((i + 1) * sizeof(float));
+		for (int j = 0; j <= i; j++) {
+			mat[i][j] = 0;
 		}
 	}
 	return mat;
 }
 
-void ts_atribui(int i, int j, float **mat, float x)
+void ts_atribui(int i, int j, float x, float **mat)
 {
-	if (i >= j) {
-		mat[i][j] = x;
+	if (i <= j) {
+		mat[j][i] = x;
 	}
 }
 
 float ts_acessa(int i, int j, float **mat)
 {
-	if (i < j) {
-		return 0;
-	}
-	return mat[i][j];
+	return i <= j ? mat[j][i] : 0;
 }
 
 void ts_libera(int n, float **mat)
@@ -79,4 +53,27 @@ void ts_libera(int n, float **mat)
 		free(mat[i]);
 	}
 	free(mat);
+}
+
+int main(void)
+{
+	int n = 3;
+	float **mat = (float **)ts_cria(n);
+
+	srand(time(NULL));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			int x = rand() % 10;
+			printf("Gerado valor %d\n", x);
+			ts_atribui(i, j, x, mat);
+		}
+	}
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			printf("%.1f ", ts_acessa(i, j, mat));
+		}
+		puts("");
+	}
+	ts_libera(n, mat);
+	return 0;
 }

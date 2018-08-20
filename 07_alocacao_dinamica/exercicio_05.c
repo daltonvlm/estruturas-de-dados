@@ -15,138 +15,75 @@
  * para testar as conversões.
  */
 
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
-void libera(int n, float **mat)
+static void check(void *p)
 {
-	for (int i = 0; i < n; i++) {
+	if (!p) {
+		perror("Erro:");
+		exit(EXIT_FAILURE);
+	}
+}
+
+static void *aloca(size_t n)
+{
+	void *p = malloc(n);
+	check(p);
+	return p;
+}
+
+float **converte_a(int m, int n, float *mat)
+{
+	float **resp = (float **)aloca(m * sizeof(float *));
+	for (int i = 0; i < m; i++) {
+		resp[i] = (float *)aloca(n * sizeof(float));
+		for (int j = 0; j < n; j++) {
+			resp[i][j] = mat[i * n + j];
+		}
+	}
+	return resp;
+}
+
+float *converte_b(int m, int n, float **mat)
+{
+	float *resp = (float *)aloca(m * n * sizeof(float));
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < n; j++) {
+			resp[i * n + j] = mat[i][j];
+		}
+	}
+	return resp;
+}
+
+static void libera_mat(int m, float **mat)
+{
+	for (int i = 0; i < m; i++) {
 		free(mat[i]);
 	}
 	free(mat);
 }
 
-float **converte_a(int m, int n, float *mat)
-{
-	float **r = (float **)malloc(m * sizeof(float *));
-
-	if (r != NULL) {
-		for (int i = 0; i < m; i++) {
-			r[i] = (float *)malloc(n * sizeof(float));
-
-			if (NULL == r[i]) {
-				libera(i, r);
-				r = NULL;
-				break;
-			}
-
-			for (int j = 0; j < n; j++) {
-				r[i][j] = mat[i * n + j];
-			}
-		}
-	}
-	return r;
-}
-
-float *converte_b(int m, int n, float **mat)
-{
-	float *r = (float *)malloc(m * n * sizeof(float));
-
-	if (r != NULL) {
-		for (int i = 0; i < m; i++) {
-			for (int j = 0; j < n; j++) {
-				r[i * n + j] = mat[i][j];
-			}
-		}
-	}
-	return r;
-}
-
-float **cria_mat(int m, int n)
-{
-	float **mat = (float **)malloc(m * sizeof(float *));
-
-	if (mat != NULL) {
-		for (int i = 0; i < m; i++) {
-			mat[i] = (float *)malloc(n * sizeof(float));
-
-			if (NULL == mat[i]) {
-				libera(i, mat);
-				mat = NULL;
-				break;
-			}
-			for (int j = 0; j < n; j++) {
-				mat[i][j] = 0;
-			}
-		}
-	}
-	return mat;
-}
-
-float *cria_vet(int m, int n)
-{
-	float *r = (float *)malloc(m * n * sizeof(float));
-
-	if (r != NULL) {
-		for (int i = 0; i < m * n; i++) {
-			r[i] = 0;
-		}
-	}
-	return r;
-}
-
-void imprime_mat(int m, int n, float **mat)
-{
-	for (int i = 0; i < m; i++) {
-		for (int j = 0; j < n; j++) {
-			printf("%.2f ", mat[i][j]);
-		}
-		puts("");
-	}
-}
-
-void imprime_vet(int m, int n, float *v)
-{
-	for (int i = 0; i < m; i++) {
-		for (int j = 0; j < n; j++) {
-			printf("%.2f ", v[i * n + j]);
-		}
-		puts("");
-	}
-}
-
 int main(void)
 {
-	int m = 3, n = 4;
-	float **mat;
-	float *vet = cria_vet(m, n);
-
-	if (NULL == vet) {
-		return 1;
-	}
-
-	for (int i = 0; i < m * n; i++) {
-		vet[i] = i;
-	}
-	puts("vet:");
-	imprime_vet(m, n, vet);
+	int m = 3, n = 3;
+	float vet[9] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	float *v, **mat;
 
 	mat = converte_a(m, n, vet);
-	if (NULL == mat) {
-		return 1;
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < m; j++) {
+			printf("%.1f ", mat[i][j]);
+		}
+		puts("");
 	}
-	puts("\nvet -> mat:");
-	imprime_mat(m, n, mat);
-	free(vet);
-
-	vet = converte_b(m, n, mat);
-	if (NULL == vet) {
-		return 1;
+	v = converte_b(m, n, mat);
+	for (int i = 0; i < m * n; i++) {
+		printf("%.1f ", v[i]);
 	}
-	puts("\nmat -> vet");
-	imprime_vet(m, n, vet);
-	free(vet);
-	libera(m, mat);
-
+	puts("");
+	libera_mat(m, mat);
+	free(v);
 	return 0;
 }
