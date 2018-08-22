@@ -7,27 +7,43 @@
  *      void string_oposta (char* str);
  */
 
-#include<stdio.h>
+#include <stdio.h>
+
+static int eh_maiusculo_minusculo(char c)
+{
+	if (c >= 'A' && c <= 'Z') {
+		return -1;
+	}
+	if (c >= 'a' && c <= 'z') {
+		return 1;
+	}
+	return 0;
+}
 
 void string_oposta(char *str)
 {
-	while (*str) {
-		if ('a' <= *str && *str <= 'z') {
-			*str = 'a' + 'z' - *str;
-		} else if ('A' <= *str && *str <= 'Z') {
-			*str = 'A' + 'Z' - *str;
+	char c;
+	int letra;
+	int i = 0;
+	while (c = str[i]) {
+		letra = eh_maiusculo_minusculo(c);
+		if (letra) {
+			int base = letra < 0 ? 'A' : 'a';
+			int limite = base + 'z' - 'a';
+			str[i] = limite - (c - base);
 		}
-		str++;
+		i++;
 	}
 }
 
 int main(void)
 {
+	char s[81];
 	while (1) {
-		char str[81];
-		scanf(" %80[^\n]", str);
-		string_oposta(str);
-		puts(str);
+		printf("Texto: ");
+		scanf(" %80[^\n]", s);
+		string_oposta(s);
+		puts(s);
 	}
 	return 0;
 }
