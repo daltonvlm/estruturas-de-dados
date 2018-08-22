@@ -8,27 +8,44 @@
  *      void shift_string (char* str);
  */
 
-#include<stdio.h>
+#include <stdio.h>
+
+static int eh_maiusculo_minusculo(char c)
+{
+	if (c >= 'A' && c <= 'Z') {
+		return -1;
+	}
+	if (c >= 'a' && c <= 'z') {
+		return 1;
+	}
+	return 0;
+}
 
 void shift_string(char *str)
 {
-	while (*str) {
-		if ('a' <= *str && *str <= 'z') {
-			*str = 'a' + (*str - 'a' + 1) % ('z' - 'a' + 1);
-		} else if ('A' <= *str && *str <= 'Z') {
-			*str = 'A' + (*str - 'A' + 1) % ('z' - 'a' + 1);
+	char c;
+	int letra;
+	int nletras = 'z' - 'a' + 1;
+	int i = 0;
+
+	while (c = str[i]) {
+		letra = eh_maiusculo_minusculo(c);
+		if (letra) {
+			int base = letra < 0 ? 'A' : 'a';
+			str[i] = base + (c - base + 1) % nletras;
 		}
-		str++;
+		i++;
 	}
 }
 
 int main(void)
 {
+	char s[81];
 	while (1) {
-		char str[81];
-		scanf(" %80[^\n]", str);
-		shift_string(str);
-		puts(str);
+		printf("Texto: ");
+		scanf(" %80[^\n]", s);
+		shift_string(s);
+		puts(s);
 	}
 	return 0;
 }

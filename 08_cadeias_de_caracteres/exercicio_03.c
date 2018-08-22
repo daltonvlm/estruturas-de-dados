@@ -6,25 +6,33 @@
  *      void minusculo (char* str);
  */
 
-#include<stdio.h>
+#include <stdio.h>
+
+static int eh_maiusculo(char c)
+{
+	return c >= 'A' && c <= 'Z';
+}
 
 void minusculo(char *str)
 {
-	while (*str) {
-		if ('A' <= *str && *str <= 'Z') {
-			*str = 'a' + *str - 'A';
+	char c;
+	int i = 0;
+	while (c = str[i]) {
+		if (eh_maiusculo(c)) {
+			str[i] += 'a' - 'A';
 		}
-		str++;
+		i++;
 	}
 }
 
 int main(void)
 {
+	char s[81];
 	while (1) {
-		char str[81];
-		scanf(" %80[^\n]", str);
-		minusculo(str);
-		puts(str);
+		printf("Texto: ");
+		scanf(" %80[^\n]", s);
+		minusculo(s);
+		puts(s);
 	}
 	return 0;
 }
