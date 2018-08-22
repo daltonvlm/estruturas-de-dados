@@ -8,29 +8,34 @@
  *      int conta_ocorrencias (char* s, char c);
  */
 
-#include<stdio.h>
+#include <stdio.h>
 
 int conta_ocorrencias(char *s, char c)
 {
 	int n = 0;
-	while (*s) {
-		if (*s == c) {
+	char tmp;
+	while (tmp = *s++) {
+		if (c == tmp) {
 			n++;
 		}
-		s++;
 	}
 	return n;
 }
 
 int main(void)
 {
+	char s[81], msg[21];
+	char c;
+	int n;
 	while (1) {
-		char c, s[81];
-		int n;
+		printf("Texto: ");
 		scanf(" %80[^\n]", s);
+		printf("Busca: ");
 		scanf(" %c", &c);
 		n = conta_ocorrencias(s, c);
-		printf("%d\n", n);
+		sprintf(msg, "%d", n);
+		printf("%s ocorrencia%s encontrada%s.\n",
+		       n ? msg : "Nenhuma", n > 1 ? "s" : "", n > 1 ? "s" : "");
 	}
 	return 0;
 }
