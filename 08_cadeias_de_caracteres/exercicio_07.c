@@ -17,28 +17,26 @@
 
 char *retira_sufixo(char *s, int n)
 {
-	int len = strlen(s);
-	char *r = (char *)malloc((len - n) + 1);
-
+	int len = strlen(s) - n;
+	char *r = (char *)malloc(len + 1);
 	if (r) {
-		int i;
-		for (i = 0; i < len - n; i++) {
+		r[len] = '\0';
+		for (int i = 0; i < len; i++) {
 			r[i] = s[i];
 		}
-		r[i] = '\0';
 	}
 	return r;
 }
 
 int main(void)
 {
+	int n;
+	char str[81], *r;
 	while (1) {
-		int n;
-		char str[81], *r;
-
+		printf("Texto: ");
 		scanf(" %80[^\n]", str);
+		printf("Quantidade: ");
 		scanf("%d", &n);
-
 		r = retira_sufixo(str, n);
 		if (r) {
 			puts(r);

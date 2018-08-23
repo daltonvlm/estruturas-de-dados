@@ -9,37 +9,44 @@
  *      char* converte (char* s);
  */
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+static int eh_letra(char c)
+{
+	return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
+}
 
 char *converte(char *s)
 {
-	int n = strlen(s);
-	char *r = (char *)malloc(n + 1);
-
-	if (r) {
-		int i = 0;
-		for (int j = 0; j < n; j++) {
-			if (('a' <= s[j] && s[j] <= 'z')
-			    || ('A' <= s[j] && s[j] <= 'Z')) {
-				r[i++] = s[j];
-			}
+	char *conv, def[81];
+	char c;
+	int i = 0;
+	while ((c = *s++) && i < 80) {
+		if (eh_letra(c)) {
+			def[i++] = c;
 		}
-		r[i] = '\0';
 	}
-	return r;
+	def[i++] = '\0';
+	conv = (char *)malloc(i);
+	if (conv) {
+		strcpy(conv, def);
+	}
+	return conv;
 }
 
 int main(void)
 {
+	char s[81];
+	char *conv;
 	while (1) {
-		char str[81], *r;
-		scanf(" %80[^\n]", str);
-		r = converte(str);
-		if (r) {
-			puts(r);
-			free(r);
+		printf("Texto: ");
+		scanf(" %80[^\n]", s);
+		conv = converte(s);
+		if (conv) {
+			puts(conv);
+			free(conv);
 		}
 	}
 	return 0;

@@ -7,28 +7,29 @@
  *      void roda_string (char* str);
  */
 
-#include<stdio.h>
-#include<string.h>
+#include <stdio.h>
+#include <string.h>
 
 void roda_string(char *str)
 {
-	char c = *str;
+	char atual = str[0];
 	int n = strlen(str);
-	for (int i = 0; i < n; i++) {
-		int p = (i + 1) % n;
-		char t = str[p];
-		str[p] = c;
-		c = t;
+	for (int i = 0; str[i]; i++) {
+		int prox = (i + 1) % n;
+		char tmp = str[prox];
+		str[prox] = atual;
+		atual = tmp;
 	}
 }
 
 int main(void)
 {
+	char s[81];
 	while (1) {
-		char str[81];
-		scanf(" %80[^\n]", str);
-		roda_string(str);
-		puts(str);
+		printf("Texto: ");
+		scanf(" %80[^\n]", s);
+		roda_string(s);
+		puts(s);
 	}
 	return 0;
 }

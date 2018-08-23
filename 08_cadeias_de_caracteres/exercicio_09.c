@@ -14,7 +14,7 @@
 
 char *concatena(char *s1, char *s2, char sep)
 {
-	char *r = (char *)malloc(strlen(s1) + strlen(s2) + 2);
+	char *r = (char *)malloc(strlen(s1) + strlen(s2) + 1);
 	if (r) {
 		char *t = r;
 		while (*t++ = *s1++) ;
@@ -26,17 +26,19 @@ char *concatena(char *s1, char *s2, char sep)
 
 int main(void)
 {
+	char *s, s1[81], s2[81];
+	char sep;
 	while (1) {
-		char sep, str1[81], str2[81], *r;
-
-		scanf(" %80[^\n]", str1);
-		scanf(" %80[^\n]", str2);
+		printf("Texto 1: ");
+		scanf(" %80[^\n]", s1);
+		printf("Texto 2: ");
+		scanf(" %80[^\n]", s2);
+		printf("Separador: ");
 		scanf(" %c", &sep);
-
-		r = concatena(str1, str2, sep);
-		if (r) {
-			puts(r);
-			free(r);
+		s = concatena(s1, s2, sep);
+		if (s) {
+			puts(s);
+			free(s);
 		}
 	}
 	return 0;
