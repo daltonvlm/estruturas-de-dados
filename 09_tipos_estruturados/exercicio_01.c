@@ -15,6 +15,12 @@ struct ponto {
 	float x, y;
 };
 
+static void leponto(char *msg, Ponto * p)
+{
+	printf("%s: ", msg);
+	scanf("%f%f", &p->x, &p->y);
+}
+
 int dentroRet(Ponto * v1, Ponto * v2, Ponto * p)
 {
 	return p->x > v1->x && p->x < v2->x && p->y > v1->y && p->y < v2->y;
@@ -22,18 +28,12 @@ int dentroRet(Ponto * v1, Ponto * v2, Ponto * p)
 
 int main(void)
 {
+	Ponto v1, v2, p;
 	while (1) {
-		Ponto v1, v2, p;
-
-		scanf("%f %f", &v1.x, &v1.y);
-		scanf("%f %f", &v2.x, &v2.y);
-		scanf("%f %f", &p.x, &p.y);
-
-		if (dentroRet(&v1, &v2, &p)) {
-			puts("Dentro");
-		} else {
-			puts("Fora");
-		}
+		leponto("\nv1", &v1);
+		leponto("v2", &v2);
+		leponto("p", &p);
+		puts(dentroRet(&v1, &v2, &p) ? "Dentro" : "Fora");
 	}
 	return 0;
 }

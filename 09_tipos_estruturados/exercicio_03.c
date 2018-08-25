@@ -28,22 +28,33 @@ struct circ {
 	float r;
 };
 
+static void check(void *p)
+{
+	if (!p) {
+		perror("Erro");
+		exit(EXIT_FAILURE);
+	}
+}
+
+static void *aloca(size_t n)
+{
+	void *p = malloc(n);
+	check(p);
+	return p;
+}
+
 Ret *ret_circunscrito(Circ * c, float h)
 {
-	Ret *r = (Ret *) malloc(sizeof(Ret));
-	if (r) {
-		r->h = h;
-		r->b = sqrt(4 * c->r * c->r + h * h);
-	}
+	Ret *r = (Ret *) aloca(sizeof(Ret));
+	r->h = h;
+	r->b = sqrt(4 * c->r * c->r + h * h);
 	return r;
 }
 
 Circ *circ_interno(Ret * r)
 {
-	Circ *c = (Circ *) malloc(sizeof(Circ));
-	if (c) {
-		c->r = min(r->b, r->h) / 2;
-	}
+	Circ *c = (Circ *) aloca(sizeof(Circ));
+	c->r = min(r->b, r->h) / 2;
 	return c;
 }
 
@@ -51,18 +62,11 @@ int main(void)
 {
 	Circ c = { 2.f }, *ci;
 	Ret r = { 3.f, 2.f }, *ri;
-
 	ri = ret_circunscrito(&c, 1.f);
-	if (ri) {
-		printf("%f %f\n", ri->b, ri->h);
-		free(ri);
-	}
-
+	printf("%f %f\n", ri->b, ri->h);
+	free(ri);
 	ci = circ_interno(&r);
-	if (ci) {
-		printf("%f\n", ci->r);
-		free(ci);
-	}
-
+	printf("%f\n", ci->r);
+	free(ci);
 	return 0;
 }

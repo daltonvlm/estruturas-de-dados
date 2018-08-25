@@ -21,6 +21,11 @@
  *
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MEDIA 6
+
 typedef struct aluno Aluno;
 struct aluno {
 	char nome[81];
@@ -31,32 +36,84 @@ struct aluno {
 	float p3;
 };
 
-#include <stdio.h>
+static void check(void *p)
+{
+	if (!p) {
+		perror("Erro");
+		exit(EXIT_FAILURE);
+	}
+}
 
-#define MEDIA 6.f
+static void *aloca(size_t n)
+{
+	void *p = malloc(n);
+	check(p);
+	return p;
+}
+
+static void le_aluno(Aluno * a)
+{
+	printf("\nEntre com o nome: ");
+	scanf(" %80[^\n]", a->nome);
+	printf("Entre com a matricula: ");
+	scanf(" %7[^\n]", a->matricula);
+	printf("Entre com a turma: ");
+	scanf(" %c", &a->turma);
+	printf("Entre com as 3 notas: ");
+	scanf("%f%f%f", &a->p1, &a->p2, &a->p3);
+}
+
+static Aluno *cria_aluno(void)
+{
+	Aluno *a = (Aluno *) aloca(sizeof(Aluno));
+	le_aluno(a);
+	return a;
+}
+
+static void imprime_aluno(Aluno * a, float media)
+{
+	printf("\nMatricula: %s\n", a->matricula);
+	printf("Nome: %s\n", a->nome);
+	printf("Turma: %c\n", a->turma);
+	printf("Media: %.1f\n", media);
+}
+
+static float calcula_media(Aluno * a)
+{
+	return (a->p1 + a->p2 + a->p3) / 3;
+}
 
 void imprime_aprovados(int n, Aluno ** turmas)
 {
+	float media;
+	puts("\nAprovados:");
 	for (int i = 0; i < n; i++) {
-		float m = (turmas[i]->p1 + turmas[i]->p2 + turmas[i]->p3) / 3;
-		if (m >= MEDIA) {
-			printf("\nMatricula: %s\n", turmas[i]->matricula);
-			printf("Nome: %s\n", turmas[i]->nome);
-			printf("Turma: %c\n", turmas[i]->turma);
-			printf("Media: %.2f\n", m);
+		media = calcula_media(turmas[i]);
+		if (media >= MEDIA) {
+			imprime_aluno(turmas[i], media);
 		}
 	}
 }
 
+static void libera_turmas(int n, Aluno ** turmas)
+{
+	for (int i = 0; i < n; i++) {
+		free(turmas[i]);
+	}
+	free(turmas);
+}
+
 int main(void)
 {
-	Aluno joao = { "Joao", "20180101", 'A', 6.2, 8.0, 9.5 };
-	Aluno bia = { "Bia", "20180102", 'A', 8.3, 5.0, 8.0 };
-	Aluno carlos = { "Carlos", "20180201", 'A', 5.0, 7.0, 0.0 };
-	Aluno marcia = { "Marcia", "20180103", 'A', 6.0, 6.0, 5.5 };
-	Aluno rodrigo = { "Rodrigo", "20180202", 'A', 7.2, 4.0, 4.5 };
-	Aluno *turma[] = { &joao, &bia, &carlos, &marcia, &rodrigo };
-
-	imprime_aprovados(5, turma);
+	int n;
+	Aluno **turmas;
+	printf("Entre com o numero de alunos da turma: ");
+	scanf("%d", &n);
+	turmas = (Aluno **) aloca(n * sizeof(Aluno *));
+	for (int i = 0; i < n; i++) {
+		turmas[i] = cria_aluno();
+	}
+	imprime_aprovados(n, turmas);
+	libera_turmas(n, turmas);
 	return 0;
 }

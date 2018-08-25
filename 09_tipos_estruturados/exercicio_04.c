@@ -44,33 +44,30 @@ struct circulo {
 
 static float distancia(Ponto * p, Ponto * q)
 {
-	return sqrt((p->x - q->x) * (p->x - q->x) +
-		    (p->y - q->y) * (p->y - q->y));
+	return sqrt(powf(p->x - q->x, 2) + powf(p->y - q->y, 2));
 }
 
 int intersecao(Circulo * a, Circulo * b)
 {
-	return distancia(&a->c, &b->c) < a->r + b->r;
+	float d = distancia(&a->c, &b->c);
+	return d <= a->r + b->r;
 }
 
 float comprimento(int n, Ponto * v)
 {
-	float d = .0f;
-	for (int i = 0; i < n; i++) {
-		int j = (i + 1) % n;
-		d += distancia(&v[i], &v[j]);
+	float c = 0;
+	for (int i = 0; i < n - 1; i++) {
+		c += distancia(v + i, v + i + 1);
 	}
-	return d;
+	return c;
 }
 
 int main(void)
 {
-	Circulo c1 = { {.0f, .0f}, 2 };
-	Circulo c2 = { {3.f, .0f}, 2 };
-
-	Ponto v[] = { {.0f, .0f}, {1.f, 1.f}, {2.f, 1.f}, {3.f, 0.f} };
 	int c;
-
+	Circulo c1 = { {0, 0}, 2 };
+	Circulo c2 = { {3, .0}, 2 };
+	Ponto v[] = { {0, 1}, {1, 1}, {2, 1}, {3, 1} };
 	printf("Intersecao: %d\n", intersecao(&c1, &c2));
 	c = comprimento(4, v);
 	printf("Comprimento: %d\n", c);

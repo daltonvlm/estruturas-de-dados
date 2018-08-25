@@ -7,6 +7,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 typedef struct aluno Aluno;
 struct aluno {
@@ -18,34 +19,82 @@ struct aluno {
 	float p3;
 };
 
+static void check(void *p)
+{
+	if (!p) {
+		perror("Erro");
+		exit(EXIT_FAILURE);
+	}
+}
+
+static void *aloca(size_t n)
+{
+	void *p = malloc(n);
+	check(p);
+	return p;
+}
+
+static void le_aluno(Aluno * a)
+{
+	printf("\nEntre com o nome: ");
+	scanf(" %80[^\n]", a->nome);
+	printf("Entre com a matricula: ");
+	scanf(" %7[^\n]", a->matricula);
+	printf("Entre com a turma: ");
+	scanf(" %c", &a->turma);
+	printf("Entre com as 3 notas: ");
+	scanf("%f%f%f", &a->p1, &a->p2, &a->p3);
+}
+
+static Aluno *cria_aluno(void)
+{
+	Aluno *a = (Aluno *) aloca(sizeof(Aluno));
+	le_aluno(a);
+	return a;
+}
+
+static float calcula_media(Aluno * a)
+{
+	return (a->p1 + a->p2 + a->p3) / 3;
+}
+
 float media_turma(int n, Aluno ** turmas, char turma)
 {
-	int c = 0;
-	float m = .0f;
-
+	float media = 0;
+	int alunos = 0;
 	for (int i = 0; i < n; i++) {
-		if (turmas[i]->turma == turma) {
-			c++;
-			m += (turmas[i]->p1 + turmas[i]->p2 +
-			      turmas[i]->p3) / 3;
+		if (turma == turmas[i]->turma) {
+			media += calcula_media(turmas[i]);
+			alunos++;
 		}
 	}
+	return alunos ? media / alunos : 0;
+}
 
-	if (c) {
-		return m / c;
+static void libera_turmas(int n, Aluno ** turmas)
+{
+	for (int i = 0; i < n; i++) {
+		free(turmas[i]);
 	}
-	return 0;
+	free(turmas);
 }
 
 int main(void)
 {
-	Aluno joao = { "Joao", "20180101", 'A', 6.2, 8.0, 9.5 };
-	Aluno bia = { "Bia", "20180102", 'B', 8.3, 5.0, 8.0 };
-	Aluno carlos = { "Carlos", "20180201", 'A', 5.0, 7.0, 0.0 };
-	Aluno marcia = { "Marcia", "20180103", 'A', 6.0, 6.0, 5.5 };
-	Aluno rodrigo = { "Rodrigo", "20180202", 'B', 7.2, 4.0, 4.5 };
-	Aluno *turma[] = { &joao, &bia, &carlos, &marcia, &rodrigo };
-
-	printf("Media da turma 'A': %.2f\n", media_turma(5, turma, 'A'));
+	char turma;
+	int n;
+	float media;
+	Aluno **turmas;
+	printf("Entre com o numero de alunos da turma: ");
+	scanf("%d", &n);
+	turmas = (Aluno **) aloca(n * sizeof(Aluno *));
+	for (int i = 0; i < n; i++) {
+		turmas[i] = cria_aluno();
+	}
+	printf("\nEntre com a turma: ");
+	scanf(" %c", &turma);
+	media = media_turma(n, turmas, turma);
+	printf("\nA media da turma '%c' e %.1f\n", turma, media);
+	libera_turmas(n, turmas);
 	return 0;
 }
