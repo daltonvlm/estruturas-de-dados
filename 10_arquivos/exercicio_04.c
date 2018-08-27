@@ -46,53 +46,48 @@
 
 typedef struct aluno Aluno;
 struct aluno {
-	char mat[8];
-	char nome[81];
-	float cr;
+	char mat[8];		// matricula do aluno
+	char nome[81];		// nome do aluno
+	float cr;		// coeficiente de rendimento
 };
+
+static void imprime_aluno(Aluno a)
+{
+	printf("\nMatricula: %s\n", a.mat);
+	printf("Nome: %s\n", a.nome);
+	printf("CR: %.1f\n", a.cr);
+}
 
 Aluno *carrega(char *arquivo, int *n)
 {
-	char buf[121];
 	int i = 0;
-	FILE *f = fopen(arquivo, "rt");
-	Aluno *alunos = NULL;
+	char mat[8], nome[81], linha[121];
+	float cr;
+	FILE *fp = fopen(arquivo, "rt");
+	Aluno *alunos;
 
-	if (!f) {
+	if (!fp) {
 		return NULL;
 	}
-
-	/* Busca a primeira linha com a quantidade de alunos */
-	while (fgets(buf, sizeof(buf), f)) {
-		if (1 == sscanf(buf, "%d", n)) {
+	while (fgets(linha, sizeof(linha), fp)) {
+		if (1 == sscanf(linha, "%d", n)) {
 			break;
 		}
 	}
-
-	if (feof(f)) {
-		fclose(f);
-		return NULL;
-	}
-
 	alunos = (Aluno *) malloc(*n * sizeof(Aluno));
 	if (!alunos) {
-		fclose(f);
-		return NULL;
+		perror("");
+		exit(EXIT_FAILURE);
 	}
-
-	while (fgets(buf, sizeof(buf), f) && i < *n) {
-		char mat[8];
-		char nome[81];
-		float cr;
-
-		if (3 == sscanf(buf, " %7s '%80[^']' %f", mat, nome, &cr)) {
+	while (i < *n && fgets(linha, sizeof(linha), fp)) {
+		if (3 == sscanf(linha, "%7s '%80[^']' %f", mat, nome, &cr)) {
 			strcpy(alunos[i].mat, mat);
 			strcpy(alunos[i].nome, nome);
 			alunos[i].cr = cr;
 			i++;
 		}
 	}
-	fclose(f);
+	fclose(fp);
 	return alunos;
 }
 
@@ -100,14 +95,11 @@ int main(void)
 {
 	int n;
 	Aluno *alunos = carrega("alunos.txt", &n);
-
 	if (alunos) {
 		for (int i = 0; i < n; i++) {
-			printf("\nMatricula: %s\n", alunos[i].mat);
-			printf("Nome: %s\n", alunos[i].nome);
-			printf("CR: %.2f\n", alunos[i].cr);
+			imprime_aluno(alunos[i]);
 		}
-		free(alunos);
 	}
+	free(alunos);
 	return 0;
 }

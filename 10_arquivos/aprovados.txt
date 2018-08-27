@@ -1,3 +1,3 @@
-Fulano		8.500000
-Sicrano		5.000000
-Maria		6.500000
+Fulano Pereira		8.5
+Sicrano Santos		5.0
+Maria Paula   		6.5

@@ -1,6 +1,6 @@
 /*
- * Considere um tipo que representa um funcionário e uma empresa, definido pela
- * estrutura a seguir;
+ * Considere um tipo que representa um funcionário de uma empresa, definido pela
+ * estrutura a seguir:
  *
  *      typedef struct funcionario Funcionario;
  *      struct funcionario {
@@ -45,58 +45,78 @@
 
 typedef struct funcionario Funcionario;
 struct funcionario {
-	char nome[81];
-	float valor_hora;
-	int horas_mes;
+	char nome[81];		// nome do funcionário
+	float valor_hora;	// valor da hora de trabalho em Reais
+	int horas_mes;		// horas trabalhadas em um mês
 };
+
+static void check(void *p)
+{
+	if (!p) {
+		perror("");
+		exit(EXIT_FAILURE);
+	}
+}
+
+static void *aloca(size_t n)
+{
+	void *p = malloc(n);
+	check(p);
+	return p;
+}
+
+Funcionario *cria_funcionario(char *nome, float valor_hora, int horas_mes)
+{
+	Funcionario *p = (Funcionario *) aloca(sizeof(Funcionario));
+	strcpy(p->nome, nome);
+	p->valor_hora = valor_hora;
+	p->horas_mes = horas_mes;
+	return p;
+}
+
+static void libera_funcionarios(int n, Funcionario ** vet)
+{
+	for (int i = 0; i < n; i++) {
+		free(vet[i]);
+	}
+}
+
+static void imprime_funcionario(Funcionario * f)
+{
+	printf("\nNome: %s\n", f->nome);
+	printf("Valor/hora: %.2f\n", f->valor_hora);
+	printf("Horas/mes: %d\n", f->horas_mes);
+}
 
 void carrega(int n, Funcionario ** vet, char *arquivo)
 {
+	char nome[81];
+	int horas_mes;
 	int i = 0;
-	char buf[121];
-	FILE *in = fopen(arquivo, "rt");
-
-	if (!in) {
-		puts("Erro");
-		exit(1);
+	float valor_hora;
+	FILE *fp = fopen(arquivo, "rt");
+	if (!fp) {
+		fprintf(stderr, "Erro\n");
+		exit(EXIT_FAILURE);
 	}
-
-	while (fgets(buf, sizeof(buf), in) && i < n) {
-		char nome[81];
-		float vh;
-		int hm;
-
-		if (1 == sscanf(buf, " %80[^\n]", nome)) {
-			if (fgets(buf, sizeof(buf), in)) {
-				if (2 == sscanf(buf, "%f %d", &vh, &hm)) {
-					Funcionario *f = (Funcionario *)
-					    malloc(sizeof(Funcionario));
-					if (f) {
-						strcpy(f->nome, nome);
-						f->valor_hora = vh;
-						f->horas_mes = hm;
-						vet[i++] = f;
-					}
-				}
-			}
+	while (i < n && fscanf(fp, " %80[^\n]", nome) != EOF) {
+		if (2 == fscanf(fp, "%f%d", &valor_hora, &horas_mes)) {
+			vet[i++] =
+			    cria_funcionario(nome, valor_hora, horas_mes);
 		}
 	}
-	fclose(in);
+	fclose(fp);
 }
 
 int main(void)
 {
 	Funcionario *vet[N] = { NULL };
 	carrega(N, vet, "funcionarios.txt");
-
 	for (int i = 0; i < N; i++) {
 		if (vet[i]) {
-			printf("Nome: %s\n", vet[i]->nome);
-			printf("Valor/hora: %.2f\n", vet[i]->valor_hora);
-			printf("Hora/mes: %d\n\n", vet[i]->horas_mes);
-			free(vet[i]);
-			vet[i] = NULL;
+			imprime_funcionario(vet[i]);
 		}
 	}
+	libera_funcionarios(N, vet);
 	return 0;
 }

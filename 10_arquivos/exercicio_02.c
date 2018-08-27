@@ -39,43 +39,35 @@
  */
 
 #include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
 
 #define MEDIA 5
 
 int main(void)
 {
-	char buf[121];
-	FILE *in, *out;
+	char linha[81];
+	char nome[81];
+	float p1, p2, media;
+	FILE *fin = fopen("turma.txt", "rt");
+	FILE *fout = fopen("aprovados.txt", "wt");
 
-	in = fopen("turma.txt", "rt");
-	if (!in) {
-		puts("Erro");
-		return 1;
+	if (!fin || !fout) {
+		fprintf(stderr, "Erro");
+		exit(EXIT_FAILURE);
 	}
-	out = fopen("aprovados.txt", "wt");
-
-	while (fgets(buf, sizeof(buf), in)) {
-		char nome[81];
-		float n1, n2, media;
-		int r;
-
-		if (1 == sscanf(buf, " %80s", nome)) {
-			if (fgets(buf, sizeof(buf), in)) {
-				r = sscanf(buf, "%f %f", &n1, &n2);
-
-				if (2 == r) {
-					media = (n1 + n2) / 2;
-					if (media >= MEDIA) {
-						fprintf(out, "%s\t\t%f\n", nome,
-							media);
-					}
+	while (fgets(linha, sizeof(linha), fin)) {
+		if (1 == sscanf(linha, " %80[^\n]", nome)) {
+			fgets(linha, sizeof(linha), fin);
+			if (2 == sscanf(linha, "%f%f", &p1, &p2)) {
+				media = (p1 + p2) / 2;
+				if (media >= MEDIA) {
+					fprintf(fout, "%s\t\t%.1f\n", nome,
+						media);
 				}
 			}
 		}
 	}
-
-	fclose(in);
-	fclose(out);
+	fclose(fout);
+	fclose(fin);
 	return 0;
 }

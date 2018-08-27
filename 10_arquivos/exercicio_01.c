@@ -24,40 +24,48 @@
  * a função deve imprimir a mensagem "Erro" e terminar a execução do programa.
  */
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 float media(char *mat, char *nome_arquivo)
 {
-	char linha[121];
-	float m = -1.f;
-	FILE *f = fopen(nome_arquivo, "rt");
-
-	if (!f) {
-		printf("Erro\n");
-		exit(1);
+	char linha[81], m[10];
+	float p1, p2, p3, md = -1;
+	FILE *fp = fopen(nome_arquivo, "rt");
+	if (!fp) {
+		fprintf(stderr, "Erro\n");
+		exit(EXIT_FAILURE);
 	}
-
-	while (fgets(linha, sizeof(linha), f)) {
-		char s[10];
-		float n1, n2, n3;
-		int r = sscanf(linha, " %9s %f %f %f", s, &n1, &n2, &n3);
-
-		if (4 == r) {
-			if (!strcmp(mat, s)) {
-				m = (n1 + n2 + n3) / 3;
+	while (fgets(linha, sizeof(linha), fp)) {
+		if (4 == sscanf(linha, "%9s%f%f%f", m, &p1, &p2, &p3)) {
+			if (!strcmp(m, mat)) {
+				md = (p1 + p2 + p3) / 3;
 				break;
 			}
 		}
 	}
-	fclose(f);
-	return m;
+	fclose(fp);
+	return md;
 }
 
 int main(void)
 {
-	float m = media("9020256-8", "notas.txt");
-	printf("Media: %.2f\n", m);
+	char mat[10], fname[81];
+	float md;
+	while (1) {
+		printf("\nInforme o nome do arquivo: ");
+		scanf("%80s", fname);
+		printf("Informe a matricula do aluno: ");
+		scanf("%9s", mat);
+		md = media(mat, fname);
+		if (-1 == md) {
+			fprintf(stderr,
+				"Aluno com matricula '%s' nao encontrado.\n",
+				mat);
+		} else {
+			printf("Media = %.1f\n", md);
+		}
+	}
 	return 0;
 }
