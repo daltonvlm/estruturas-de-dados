@@ -23,24 +23,31 @@ struct funcionario {
 	int horas_mes;
 };
 
-static float salario(Funcionario * pf)
+static float calcula_salario(Funcionario * f)
 {
-	return pf->valor_hora * pf->horas_mes;
+	return f->valor_hora * f->horas_mes;
 }
 
-static int cmp_salario_inv(const void *p1, const void *p2)
+static int compara_funcionarios_salario(const void *v1, const void *v2)
 {
-	Funcionario **pp1 = (Funcionario **) p1;
-	Funcionario **pp2 = (Funcionario **) p2;
-
-	return salario(*pp2) - salario(*pp1);
+	Funcionario **p1 = (Funcionario **) v1;
+	Funcionario **p2 = (Funcionario **) v2;
+	float dif = calcula_salario(*p2) - calcula_salario(*p1);
+	if (dif < 0) {
+		return -1;
+	}
+	if (dif > 0) {
+		return 1;
+	}
+	return 0;
 }
 
 void imprime_marajas(int n, Funcionario ** vet)
 {
-	qsort(vet, n, sizeof(Funcionario *), cmp_salario_inv);
+	qsort(vet, n, sizeof(Funcionario *), compara_funcionarios_salario);
+	puts("\nMarajas:");
 	for (int i = 0; i < 5 && i < n; i++) {
-		puts(vet[i]->nome);
+		printf("%s: R$ %.2f\n", vet[i]->nome, calcula_salario(vet[i]));
 	}
 }
 
@@ -57,10 +64,9 @@ int main(void)
 	};
 	Funcionario *vpf[] =
 	    { vf, vf + 1, vf + 2, vf + 3, vf + 4, vf + 5, vf + 6 };
-
 	for (int i = 0; i < 7; i++) {
 		printf("Nome: %s\tSalario: %.2f\n", vf[i].nome,
-		       salario(vf + i));
+		       calcula_salario(vf + i));
 	}
 	imprime_marajas(7, vpf);
 	return 0;

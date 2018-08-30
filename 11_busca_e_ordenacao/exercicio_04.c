@@ -45,15 +45,14 @@ void ordem_alfabetica(int n, Aluno * v)
 int main(void)
 {
 	Aluno v[6] = {
-		{"Aluno C"},
-		{"Aluno D"},
-		{"Aluno A"},
-		{"Aluno E"},
-		{"Aluno B"},
-		{"Aluno F"}
+		{"Aluno C", 0},
+		{"Aluno D", 0},
+		{"Aluno A", 0},
+		{"Aluno E", 0},
+		{"Aluno B", 0},
+		{"Aluno F", 0}
 	};
 	ordem_alfabetica(6, v);
-
 	for (int i = 0; i < 6; i++) {
 		puts(v[i].nome);
 	}

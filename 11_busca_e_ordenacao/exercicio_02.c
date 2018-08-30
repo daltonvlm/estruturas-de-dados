@@ -24,7 +24,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 typedef struct pessoa Pessoa;
 struct pessoa {
@@ -32,30 +31,22 @@ struct pessoa {
 	int dia, mes, ano;	// data de nascimento
 };
 
-static int cmp_data(int dia, int mes, int ano, Pessoa * p)
+static int compara_pessoa_data(Pessoa * info, Pessoa * elem)
 {
-	if (ano < p->ano) {
-		return -1;
-	} else if (ano > p->ano) {
-		return 1;
-	}
-	if (mes < p->mes) {
-		return -1;
-	} else if (mes > p->mes) {
-		return 1;
-	}
-	return dia - p->dia;
+	int ano = info->ano - elem->ano;
+	int mes = info->mes - elem->mes;
+	int dia = info->dia - elem->dia;
+	return (ano ? ano : (mes ? mes : dia));
 }
 
 Pessoa *busca(int n, Pessoa ** v, int dia, int mes, int ano)
 {
 	int i = 0;
 	int f = n - 1;
-
+	Pessoa info = {.dia = dia,.mes = mes,.ano = ano };
 	while (i <= f) {
 		int m = (i + f) / 2;
-		int cmp = cmp_data(dia, mes, ano, v[m]);
-
+		int cmp = compara_pessoa_data(&info, v[m]);
 		if (cmp < 0) {
 			f = m - 1;
 		} else if (cmp > 0) {
@@ -80,18 +71,12 @@ int main(void)
 	Pessoa *vpp[6] = { vp, vp + 1, vp + 2, vp + 3, vp + 4, vp + 5 };
 	char buf[121];
 	int dia, mes, ano;
-
 	while (1) {
 		printf("Data (dia, mes, ano): ");
 		fgets(buf, sizeof(buf), stdin);
 		sscanf(buf, "%d %d %d", &dia, &mes, &ano);
 		Pessoa *pp = busca(6, vpp, dia, mes, ano);
-
-		if (pp) {
-			puts(pp->nome);
-		} else {
-			puts("Nenhuma pessoa encontrada.");
-		}
+		puts(pp ? pp->nome : "Nenhuma pessoa encontrada.");
 	}
 	return 0;
 }

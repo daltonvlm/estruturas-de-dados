@@ -37,59 +37,50 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define N 8
+
 typedef struct funcionario Funcionario;
 struct funcionario {
 	char nome[81];
 	int dia, mes;
 };
 
-static int cmp(const void *p1, const void *p2)
+static int compara_data_nome(const void *v1, const void *v2)
 {
-	Funcionario *pf1 = *(Funcionario **) p1;
-	Funcionario *pf2 = *(Funcionario **) p2;
-
-	/*
-	 * return pf1->mes-pf2->mes 
-	 * || pf1->dia-pf2->dia 
-	 * || strcmp(pf1->nome,pf2->nome);
-	 *      
-	 */
-
-	if (pf1->mes != pf2->mes) {
-		return pf1->mes - pf2->mes;
-	}
-	if (pf1->dia != pf2->dia) {
-		return pf1->dia - pf2->dia;
-	}
-	return strcmp(pf1->nome, pf2->nome);
+	Funcionario **p1 = (Funcionario **) v1;
+	Funcionario **p2 = (Funcionario **) v2;
+	int mes = (*p1)->mes - (*p2)->mes;
+	int dia = (*p1)->dia - (*p2)->dia;
+	return (mes ? mes : (dia ? dia : (strcmp((*p1)->nome, (*p2)->nome))));
 }
 
-void ordena(int n, Funcionario ** vpf)
+static int compara_mes(const void *v1, const void *v2)
 {
-	qsort(vpf, n, sizeof(Funcionario *), cmp);
+	int *info = (int *)v1;
+	Funcionario **elem = (Funcionario **) v2;
+	return *info - (*elem)->mes;
 }
 
-static int cmp_mes(const void *p1, const void *p2)
+void ordena(int n, Funcionario ** v)
 {
-	int *pmes = (int *)p1;
-	Funcionario **ppf = (Funcionario **) p2;
-	return *pmes - (*ppf)->mes;
+	qsort(v, n, sizeof(Funcionario *), compara_data_nome);
 }
 
-void aniversariantes_do_mes(int n, Funcionario ** vpf, int mes)
+void imprime_aniversariantes(int n, Funcionario ** v, int mes)
 {
-	Funcionario **ppf =
-	    bsearch(&mes, vpf, n, sizeof(Funcionario *), cmp_mes);
-	if (ppf) {
-		aniversariantes_do_mes(ppf - vpf, vpf, mes);
-		printf("%s\n", (*ppf)->nome);
-		aniversariantes_do_mes(n - (int)(ppf - vpf) - 1, ppf + 1, mes);
+	Funcionario **p =
+	    (Funcionario **) bsearch(&mes, v, n, sizeof(Funcionario *),
+				     compara_mes);
+	if (p) {
+		imprime_aniversariantes(p - v, v, mes);
+		printf("%s\n", (*p)->nome);
+		imprime_aniversariantes(n - (int)(p - v) - 1, p + 1, mes);
 	}
 }
 
 int main(void)
 {
-	Funcionario vf[8] = {
+	Funcionario vf[N] = {
 		{"Funcionario H", 4, 4},
 		{"Funcionario B", 2, 2},
 		{"Funcionario G", 3, 3},
@@ -102,15 +93,14 @@ int main(void)
 	Funcionario *vpf[] = { vf, vf + 1, vf + 2,
 		vf + 3, vf + 4, vf + 5, vf + 6, vf + 7
 	};
+	int mes = 4;
 
-	ordena(8, vpf);
-	for (int i = 0; i < 8; i++) {
+	ordena(N, vpf);
+	for (int i = 0; i < N; i++) {
 		printf("%s\t%02d/%02d\n", vpf[i]->nome, vpf[i]->dia,
 		       vpf[i]->mes);
 	}
-	puts("");
-
-	aniversariantes_do_mes(8, vpf, 2);
-
+	printf("\nAniversariantes do mes %02d:\n", mes);
+	imprime_aniversariantes(N, vpf, mes);
 	return 0;
 }

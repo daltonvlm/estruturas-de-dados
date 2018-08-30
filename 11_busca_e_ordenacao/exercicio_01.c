@@ -35,11 +35,9 @@ Funcionario *busca(int n, Funcionario ** v, char *nome)
 {
 	int i = 0;
 	int f = n - 1;
-
 	while (i <= f) {
 		int m = (i + f) / 2;
 		int cmp = strcmp(nome, v[m]->nome);
-
 		if (cmp < 0) {
 			f = m - 1;
 		} else if (cmp > 0) {
@@ -65,17 +63,11 @@ int main(void)
 	Funcionario *vpf[7] =
 	    { vf, vf + 1, vf + 2, vf + 3, vf + 4, vf + 5, vf + 6 };
 	char nome[81];
-
 	while (1) {
 		printf("Nome: ");
 		scanf(" %80[^\n]", nome);
-
 		Funcionario *pf = busca(7, vpf, nome);
-		if (pf) {
-			printf("\"%s\" encontrado\n", pf->nome);
-		} else {
-			printf("\"%s\" nao encontrado\n", nome);
-		}
+		printf("'%s' %sencontrado\n", nome, pf ? "" : "nao ");
 	}
 	return 0;
 }

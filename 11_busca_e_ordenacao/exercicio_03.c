@@ -66,7 +66,6 @@ int main(void)
 		printf("%d ", v[i]);
 	}
 	puts("");
-
 	for (int i = 2; i < 18; i++) {
 		int mp = mais_proximo(6, v, i);
 		printf("%d -> %d\n", i, mp);

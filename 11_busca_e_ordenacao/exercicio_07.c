@@ -13,75 +13,82 @@
 
 #include <stdio.h>
 
-void quick_sort(int n, int *v);
-void quick_sort_modificado(int n, int *v);
-
-int main(void)
+static void imprime(int n, int *v)
 {
-	int v[] = { 9, 0, 8, 1, 7, 2, 6, 3, 5, 4 };
-	quick_sort_modificado(10, v);
-
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < n; i++) {
 		printf("%d ", v[i]);
 	}
 	puts("");
-	return 0;
 }
 
-static int mediano(int a, int b, int c)
+static void ajusta_pivo(int n, int *v)
 {
-	int v[] = { a, b, c };
+	int p[] = { 0, n / 2, n - 1 };
 
-	for (int i = 2; i > 0; i--) {
+	puts("Ajustando pivo:");
+	imprime(n, v);
+	for (int i = 2; i; i--) {
 		for (int j = 0; j < i; j++) {
-			if (v[j] > v[j + 1]) {
-				int t = v[j];
-				v[j] = v[j + 1];
-				v[j + 1] = t;
+			if (v[p[j]] > v[p[j + 1]]) {
+				int t = p[j];
+				p[j] = p[j + 1];
+				p[j + 1] = t;
 			}
 		}
 	}
-	return v[1];
+	if (p[1]) {
+		int t = v[0];
+		v[0] = v[p[1]];
+		v[p[1]] = t;
+	}
+	imprime(n, v);
 }
 
-void quick_sort(int n, int *v)
+void rapida(int n, int *v)
 {
 	if (n < 2) {
 		return;
 	}
+	if (2 == n) {
+		if (v[0] > v[1]) {
+			int t = v[0];
+			v[0] = v[1];
+			v[1] = t;
+		}
+		return;
+	}
+	ajusta_pivo(n, v);
 	int a = 1;
 	int b = n - 1;
-
-	while (a < b) {
-		while (a < n && v[a] <= v[0]) {
+	int x = v[0];
+	do {
+		while (v[a] <= x && a < n) {
 			a++;
 		}
-		while (v[b] > v[0]) {
+		while (v[b] > x) {
 			b--;
 		}
 		if (a < b) {
 			int t = v[a];
 			v[a] = v[b];
 			v[b] = t;
+			a++;
+			b--;
 		}
-	}
-	int t = v[0];
+	} while (a <= b);
 	v[0] = v[b];
-	v[b] = t;
-
-	quick_sort_modificado(b, v);
-	quick_sort_modificado(n - a, v + a);
+	v[b] = x;
+	rapida(b, v);
+	rapida(n - a, v + a);
 }
 
-void quick_sort_modificado(int n, int *v)
+#define N 10
+
+int main(void)
 {
-	if (n > 2) {
-		int m = mediano(0, n / 2, n - 1);
-		if (m != 0) {
-			int t = v[0];
-			v[0] = v[m];
-			v[m] = t;
-		}
-	}
-	quick_sort(n, v);
+	int v[N] = { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
+	rapida(N, v);
+	puts("Vetor ordenado:");
+	imprime(N, v);
+	return 0;
 }
