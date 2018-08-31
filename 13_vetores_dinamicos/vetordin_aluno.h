@@ -3,12 +3,12 @@
 
 #include "aluno.h"
 
-typedef struct vetordin VetorDin;
+typedef struct vetordin_aluno VDAluno;
 
-VetorDin *vd_cria(void);
-void vd_insere(VetorDin * vd, char *nome, float p1, float p2, float p3);
-int vd_tam(VetorDin * vd);
-Aluno *vd_acessa(VetorDin * vd, int i);
-void vd_libera(VetorDin * vd);
+VDAluno *vda_cria(void);
+void vda_insere(VDAluno * vda, Aluno * a);
+int vda_tam(VDAluno * vda);
+Aluno *vda_acessa(VDAluno * vda, int i);
+void vda_libera(VDAluno * vda, int libera_alunos);
 
 #endif

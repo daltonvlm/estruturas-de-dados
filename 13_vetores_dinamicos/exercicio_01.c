@@ -27,47 +27,37 @@
 #include "aluno.h"
 #include "vetordin_aluno.h"
 
-VetorDin *le_arquivo(char *arquivo)
+void le_alunos(VDAluno * vda, char *fname)
 {
 	char buf[121];
-	FILE *f = fopen(arquivo, "rt");
-	VetorDin *vd = vd_cria();
+	char nome[81];
+	float p1, p2, p3;
+	FILE *fp = fopen(fname, "rt");
 
-	if (!f) {
-		vd_libera(vd);
-		perror("Erro");
+	if (!fp) {
+		perror("");
 		exit(EXIT_FAILURE);
 	}
-
-	while (fgets(buf, sizeof(buf), f)) {
-		char nome[81];
-		float p1, p2, p3;
-
-		if (sscanf(buf, " %80[^\n]", nome) == 1) {
-			if (!fgets(buf, sizeof(buf), f)) {
-				break;
-			}
-			if (sscanf(buf, "%f %f %f", &p1, &p2, &p3) == 3) {
-				vd_insere(vd, nome, p1, p2, p3);
+	while (fgets(buf, sizeof(buf), fp)) {
+		if (1 == sscanf(buf, " %80[^\n0-9]", nome)) {
+			if (3 == fscanf(fp, "%f%f%f", &p1, &p2, &p3)) {
+				vda_insere(vda, aluno_cria(nome, p1, p2, p3));
 			}
 		}
 	}
-	fclose(f);
-	return vd;
+	fclose(fp);
 }
 
 int main(void)
 {
-	float p1, p2, p3;
-	Aluno *a;
-	VetorDin *vd = le_arquivo("alunos.txt");
+	int n;
+	VDAluno *vda = vda_cria();
 
-	for (int i = 0; i < vd_tam(vd); i++) {
-		a = vd_acessa(vd, i);
-		aluno_getnotas(a, &p1, &p2, &p3);
-		printf("Nome: %s\n", aluno_getnome(a));
-		printf("Notas: %.2f %.2f %.2f\n", p1, p2, p3);
+	le_alunos(vda, "alunos.txt");
+	n = vda_tam(vda);
+	for (int i = 0; i < n; i++) {
+		aluno_imprime(vda_acessa(vda, i));
 	}
-	vd_libera(vd);
+	vda_libera(vda, 1);
 	return 0;
 }

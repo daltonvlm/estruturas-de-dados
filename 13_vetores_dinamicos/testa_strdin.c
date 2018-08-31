@@ -10,10 +10,9 @@ StrDin *le_texto(char *arquivo)
 
 	if (!f) {
 		free(sd);
-		perror("Erro");
+		perror("");
 		exit(EXIT_FAILURE);
 	}
-
 	while (fgets(buf, sizeof(buf), f)) {
 		sd_concatena(sd, buf);
 	}
@@ -24,6 +23,7 @@ StrDin *le_texto(char *arquivo)
 int main(void)
 {
 	StrDin *sd = le_texto("strdin.c");
+	sd_redimensiona(sd);
 	printf("%s", sd_acessa(sd));
 	sd_libera(sd);
 	return 0;

@@ -1,71 +1,74 @@
-#include "vetordin_aluno.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include "vetordin_aluno.h"
 
-struct vetordin {
+struct vetordin_aluno {
 	int n;
 	int nmax;
 	Aluno **v;
 };
 
-VetorDin *vd_cria(void)
+static void check(void *p)
 {
-	VetorDin *vd = (VetorDin *) malloc(sizeof(VetorDin));
-	if (!vd) {
-		perror("Erro");
+	if (!p) {
+		perror("");
 		exit(EXIT_FAILURE);
 	}
-	vd->n = 0;
-	vd->nmax = 4;
-	vd->v = (Aluno **) malloc(vd->nmax * sizeof(Aluno *));
-	if (!vd->v) {
-		perror("Erro");
+}
+
+static void *aloca(size_t n)
+{
+	void *p = malloc(n);
+	check(p);
+	return p;
+}
+
+VDAluno *vda_cria(void)
+{
+	VDAluno *vda = (VDAluno *) aloca(sizeof(VDAluno));
+	vda->n = 0;
+	vda->nmax = 4;
+	vda->v = (Aluno **) aloca(vda->nmax * sizeof(Aluno *));
+	return vda;
+}
+
+static void realoca(VDAluno * vda)
+{
+	vda->nmax *= 2;
+	vda->v = (Aluno **) realloc(vda->v, vda->nmax * sizeof(Aluno *));
+	if (!vda->v) {
+		perror("");
 		exit(EXIT_FAILURE);
 	}
-	return vd;
 }
 
-static void realoca(VetorDin * vd)
+void vda_insere(VDAluno * vda, Aluno * a)
 {
-	Aluno **tmp;
-
-	vd->nmax *= 2;
-	tmp = (Aluno * *)realloc(vd->v, vd->nmax * sizeof(Aluno *));
-
-	if (!tmp) {
-		perror("Erro");
-		exit(EXIT_FAILURE);
+	if (vda->n == vda->nmax) {
+		realoca(vda);
 	}
-	vd->v = tmp;
+	vda->v[vda->n++] = a;
 }
 
-void vd_insere(VetorDin * vd, char *nome, float p1, float p2, float p3)
+int vda_tam(VDAluno * vda)
 {
-	if (vd->n == vd->nmax) {
-		realoca(vd);
+	return vda->n;
+}
+
+Aluno *vda_acessa(VDAluno * vda, int i)
+{
+	assert(i >= 0 && i < vda->n);
+	return vda->v[i];
+}
+
+void vda_libera(VDAluno * vda, int libera_alunos)
+{
+	if (libera_alunos) {
+		for (int i = 0; i < vda->n; i++) {
+			aluno_libera(vda->v[i]);
+		}
 	}
-	Aluno *a = aluno_cria(nome, p1, p2, p3);
-	vd->v[vd->n++] = a;
-}
-
-int vd_tam(VetorDin * vd)
-{
-	return vd->n;
-}
-
-Aluno *vd_acessa(VetorDin * vd, int i)
-{
-	assert(i >= 0 && i < vd->n);
-	return vd->v[i];
-}
-
-void vd_libera(VetorDin * vd)
-{
-	for (int i = 0; i < vd->n; i++) {
-		aluno_libera(vd->v[i]);
-	}
-	free(vd->v);
-	free(vd);
+	free(vda->v);
+	free(vda);
 }

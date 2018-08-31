@@ -4,20 +4,16 @@
 
 VetorDin *le_valores(char *arquivo)
 {
-	char buf[121];
+	float x;
 	FILE *f = fopen(arquivo, "rt");
 	VetorDin *vd = vd_cria();
 
 	if (!f) {
-		free(vd);
+		vd_libera(vd);
 		return NULL;
 	}
-
-	while (fgets(buf, sizeof(buf), f)) {
-		float x;
-		if (sscanf(buf, "%f", &x) == 1) {
-			vd_insere(vd, x);
-		}
+	while (1 == fscanf(f, "%f", &x)) {
+		vd_insere(vd, x);
 	}
 	fclose(f);
 	return vd;
@@ -26,16 +22,16 @@ VetorDin *le_valores(char *arquivo)
 int main(void)
 {
 	VetorDin *vd = le_valores("numeros.txt");
+	int tam;
 
 	if (!vd) {
-		perror("Erro");
-		return EXIT_FAILURE;
+		perror("");
+		exit(EXIT_FAILURE);
 	}
-
-	for (int i = 0; i < vd_tam(vd); i++) {
+	tam = vd_tam(vd);
+	for (int i = 0; i < tam; i++) {
 		printf("%f\n", vd_acessa(vd, i));
 	}
-
 	free(vd);
 	return 0;
 }

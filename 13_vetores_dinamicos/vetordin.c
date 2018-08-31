@@ -1,8 +1,7 @@
-#include "vetordin.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include "vetordin.h"
 
 struct vetordin {
 	int n;
@@ -10,36 +9,38 @@ struct vetordin {
 	float *v;
 };
 
+static void check(void *p)
+{
+	if (!p) {
+		perror("");
+		exit(EXIT_FAILURE);
+	}
+}
+
+static void *aloca(size_t n)
+{
+	void *p = malloc(n);
+	check(p);
+	return p;
+}
+
 VetorDin *vd_cria(void)
 {
-	VetorDin *vd = (VetorDin *) malloc(sizeof(VetorDin));
-	if (!vd) {
-		perror("Erro");
-		exit(EXIT_FAILURE);
-	}
+	VetorDin *vd = (VetorDin *) aloca(sizeof(VetorDin));
 	vd->n = 0;
 	vd->nmax = 4;
-	vd->v = (float *)malloc(vd->nmax * sizeof(float));
-	if (!vd->v) {
-		perror("Erro");
-		exit(EXIT_FAILURE);
-	}
+	vd->v = (float *)aloca(vd->nmax * sizeof(float));
 	return vd;
 }
 
 static void realoca(VetorDin * vd)
 {
-	float *tmp;
-
 	vd->nmax *= 2;
-	tmp = (float *)realloc(vd->v, vd->nmax * sizeof(float));
-
-	if (!tmp) {
-		perror("Erro");
+	vd->v = (float *)realloc(vd->v, vd->nmax * sizeof(float));
+	if (!vd->v) {
+		perror("");
 		exit(EXIT_FAILURE);
 	}
-
-	vd->v = tmp;
 }
 
 void vd_insere(VetorDin * vd, float x)

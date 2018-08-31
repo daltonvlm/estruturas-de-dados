@@ -1,8 +1,7 @@
-#include "strdin.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "strdin.h"
 
 #define max(a, b) ((a) > (b) ? (a) : (b))
 
@@ -20,7 +19,7 @@ StrDin *sd_criacopia(const char *s)
 {
 	StrDin *sd = (StrDin *) malloc(sizeof(StrDin));
 	if (!sd) {
-		perror("Erro");
+		perror("");
 		exit(EXIT_FAILURE);
 	}
 	sd->nmax = 0;
@@ -35,14 +34,10 @@ static void realoca(StrDin * sd, int n)
 		sd->nmax = max(n, 2 * sd->nmax);
 	} else if (n < sd->nmax / 2) {
 		sd->nmax /= 2;
-	} else {
-		sd->nmax = n;
 	}
-
 	sd->v = (char *)realloc(sd->v, sd->nmax + 1);
-
 	if (!sd->v) {
-		perror("Erro");
+		perror("");
 		exit(EXIT_FAILURE);
 	}
 }
@@ -75,7 +70,7 @@ void sd_redimensiona(StrDin * sd)
 	sd->nmax = strlen(sd->v);
 	sd->v = (char *)realloc(sd->v, sd->nmax + 1);
 	if (!sd->v) {
-		perror("Erro");
+		perror("");
 		exit(EXIT_FAILURE);
 	}
 }
