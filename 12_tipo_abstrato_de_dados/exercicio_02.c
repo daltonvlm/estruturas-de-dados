@@ -5,51 +5,61 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "matriz.h"
 
-Matriz *mat_transposta(Matriz * mat)
+static Matriz *mat_transp(Matriz * mat)
 {
-	int m = mat_colunas(mat);
-	int n = mat_linhas(mat);
-	Matriz *t = mat_cria(m, n);
-
-	for (int i = 0; i < m; i++) {
-		for (int j = 0; j < n; j++) {
-			float v = mat_acessa(mat, j, i);
-			mat_atribui(t, i, j, v);
+	int lin = mat_colunas(mat);
+	int col = mat_linhas(mat);
+	Matriz *tp = mat_cria(lin, col);
+	for (int i = 0; i < lin; i++) {
+		for (int j = 0; j < col; j++) {
+			float x = mat_acessa(mat, j, i);
+			mat_atribui(tp, i, j, x);
 		}
 	}
-	return t;
+	return tp;
 }
 
 static void mat_imprime(Matriz * mat)
 {
-	for (int i = 0; i < mat_linhas(mat); i++) {
-		for (int j = 0; j < mat_colunas(mat); j++) {
-			printf("%5.2f ", mat_acessa(mat, i, j));
+	int lin = mat_linhas(mat);
+	int col = mat_colunas(mat);
+	for (int i = 0; i < lin; i++) {
+		for (int j = 0; j < col; j++) {
+			printf("%g ", mat_acessa(mat, i, j));
 		}
 		puts("");
 	}
 }
 
-int main(void)
+static void mat_popula(Matriz * mat, int max)
 {
-	float cont = .0f;
-	Matriz *mat, *t;
-
-	mat = mat_cria(2, 3);
-	for (int i = 0; i < mat_linhas(mat); i++) {
-		for (int j = 0; j < mat_colunas(mat); j++) {
-			mat_atribui(mat, i, j, cont++);
+	int lin = mat_linhas(mat);
+	int col = mat_colunas(mat);
+	for (int i = 0; i < lin; i++) {
+		mat_atribui(mat, i, i, rand() % max);
+		for (int j = 0; j < i; j++) {
+			mat_atribui(mat, i, j, rand() % max);
+			mat_atribui(mat, j, i, rand() % max);
 		}
 	}
+}
 
-	t = mat_transposta(mat);
+int main(void)
+{
+	Matriz *mat, *tp;
+	mat = mat_cria(2, 3);
+
+	srand(time(NULL));
+	mat_popula(mat, 10);
+	puts("Matriz:");
 	mat_imprime(mat);
-	puts("");
-	mat_imprime(t);
-
+	tp = mat_transp(mat);
+	puts("\nTransposta:");
+	mat_imprime(tp);
 	mat_libera(mat);
-	mat_libera(t);
+	mat_libera(tp);
 	return 0;
 }
