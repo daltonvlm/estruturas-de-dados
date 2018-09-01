@@ -1,18 +1,24 @@
-#include "lista2.h"
-
 #include <stdio.h>
 #include <stdlib.h>
+#include "lista2_int.h"
 
-struct lista2 {
-	No *prim;
-	No *ult;
+typedef struct listano2 ListaNo2;
+struct listano2 {
+	int info;
+	ListaNo2 *ant;
+	ListaNo2 *prox;
 };
 
-static void *aloca(int n)
+struct lista2 {
+	ListaNo2 *prim;
+	ListaNo2 *ult;
+};
+
+static void *aloca(size_t n)
 {
 	void *p = malloc(n);
 	if (!p) {
-		perror("Erro");
+		perror("");
 		exit(EXIT_FAILURE);
 	}
 	return p;
@@ -29,20 +35,19 @@ Lista2 *lst2_cria(void)
 void lst2_libera(Lista2 * lst)
 {
 	while (lst->prim) {
-		No *t = lst->prim;
+		ListaNo2 *t = lst->prim;
 		lst->prim = t->prox;
 		free(t);
 	}
 	free(lst);
 }
 
-void lst2_insere_inicio(Lista2 * lst, int v)
+void lst2_insere_inicio(Lista2 * lst, int info)
 {
-	No *novo = (No *) aloca(sizeof(No));
-	novo->info = v;
+	ListaNo2 *novo = (ListaNo2 *) aloca(sizeof(ListaNo2));
+	novo->info = info;
 	novo->ant = NULL;
 	novo->prox = lst->prim;
-
 	if (lst->prim) {
 		lst->prim->ant = novo;
 	} else {
@@ -51,13 +56,12 @@ void lst2_insere_inicio(Lista2 * lst, int v)
 	lst->prim = novo;
 }
 
-void lst2_insere_final(Lista2 * lst, int v)
+void lst2_insere_final(Lista2 * lst, int info)
 {
-	No *novo = (No *) aloca(sizeof(No));
-	novo->info = v;
+	ListaNo2 *novo = (ListaNo2 *) aloca(sizeof(ListaNo2));
+	novo->info = info;
 	novo->ant = lst->ult;
 	novo->prox = NULL;
-
 	if (lst->ult) {
 		lst->ult->prox = novo;
 	} else {
@@ -66,31 +70,20 @@ void lst2_insere_final(Lista2 * lst, int v)
 	lst->ult = novo;
 }
 
-No *lst2_busca(Lista2 * lst, int v)
+void lst2_retira(Lista2 * lst, int info)
 {
-	No *p = lst->prim;
-	while (p && p->info != v) {
-		p = p->prox;
-	}
-	return p;
-}
-
-void lst2_retira(Lista2 * lst, int v)
-{
-	No **p = &lst->prim;
-
-	while (*p && (*p)->info != v) {
+	ListaNo2 **p = &lst->prim;
+	while (*p && (*p)->info != info) {
 		p = &(*p)->prox;
 	}
-
 	if (*p) {
-		No *t = *p;
-		if ((*p)->prox) {
-			(*p)->prox->ant = (*p)->ant;
+		ListaNo2 *t = *p;
+		if (t->prox) {
+			t->prox->ant = t->ant;
 		} else {
-			lst->ult = (*p)->ant;
+			lst->ult = t->ant;
 		}
-		*p = (*p)->prox;
+		*p = t->prox;
 		free(t);
 	}
 }
