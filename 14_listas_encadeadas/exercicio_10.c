@@ -23,12 +23,10 @@ struct lista {
 void para_circular(Lista * l)
 {
 	No *p = l->prim;
-
-	while (p && p->prox) {
-		p = p->prox;
-	}
-
 	if (p) {
+		for (; p->prox; p = p->prox) {
+			;
+		}
 		p->prox = l->prim;
 	}
 }
@@ -36,7 +34,6 @@ void para_circular(Lista * l)
 static void imprime(Lista * lst)
 {
 	No *p = lst->prim;
-
 	if (p) {
 		do {
 			puts(p->info);
@@ -58,11 +55,8 @@ int main(void)
 	No no2 = { "dois", &no3 };
 	No no1 = { "um", &no2 };
 	No no0 = { "zero", &no1 };
-
 	Lista lst = { &no0 };
-
 	para_circular(&lst);
 	imprime(&lst);
-
 	return 0;
 }

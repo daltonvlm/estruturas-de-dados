@@ -24,50 +24,48 @@ struct lista {
 	No *prim;
 };
 
-static void *aloca(int n)
+static void *aloca(size_t n)
 {
 	void *p = malloc(n);
 	if (!p) {
-		perror("Erro");
+		perror("");
 		exit(EXIT_FAILURE);
 	}
 	return p;
 }
 
-Lista *copia(Lista * l)
+static No *copia_no(No * p)
 {
-	No *atual = l->prim;
-	No **p;
-	Lista *cp = (Lista *) aloca(sizeof(Lista));
-
-	p = &cp->prim;
-
-	while (atual) {
-		*p = (No *) aloca(sizeof(No));
-		strcpy((*p)->info, atual->info);
-		atual = atual->prox;
-		p = &(*p)->prox;
-	}
-	*p = NULL;
-	return cp;
+	No *cpy = (No *) aloca(sizeof(No));
+	strcpy(cpy->info, p->info);
+	cpy->prox = NULL;
+	return cpy;
 }
 
-static No *copia_no(No * no)
+Lista *copia(Lista * l)
 {
-	if (!no) {
-		return NULL;
+	Lista *cpy = (Lista *) aloca(sizeof(Lista));
+	No **p = &cpy->prim;
+	for (No * q = l->prim; q; q = q->prox) {
+		*p = copia_no(q);
+		p = &(*p)->prox;
 	}
-	No *cp = (No *) aloca(sizeof(No));
-	strcpy(cp->info, no->info);
-	cp->prox = copia_no(no->prox);
-	return cp;
+	return cpy;
+}
+
+static void copia_nos(No ** cpy, No * orig)
+{
+	if (orig) {
+		*cpy = copia_no(orig);
+		copia_nos(&(*cpy)->prox, orig->prox);
+	}
 }
 
 Lista *copia_rec(Lista * l)
 {
-	Lista *cp = (Lista *) aloca(sizeof(Lista));
-	cp->prim = copia_no(l->prim);
-	return cp;
+	Lista *cpy = (Lista *) aloca(sizeof(Lista));
+	copia_nos(&cpy->prim, l->prim);
+	return cpy;
 }
 
 void libera(Lista * lst)
@@ -82,10 +80,8 @@ void libera(Lista * lst)
 
 void imprime(Lista * lst)
 {
-	No *p = lst->prim;
-	while (p) {
+	for (No * p = lst->prim; p; p = p->prox) {
 		puts(p->info);
-		p = p->prox;
 	}
 	puts("");
 }
@@ -102,8 +98,8 @@ int main(void)
 	No no2 = { "dois", &no3 };
 	No no1 = { "um", &no2 };
 	No no0 = { "zero", &no1 };
-
 	Lista lst = { &no0 };
+	//Lista *cp = copia(&lst);
 	Lista *cp = copia_rec(&lst);
 
 	puts("Lista:");

@@ -20,28 +20,40 @@ struct no {
 
 struct lista {
 	No *prim;
+	No *ult;
 };
 
 void retira_inicio(Lista2 * l)
 {
 	if (l->prim) {
-		l->prim = l->prim->prox;
-		if (l->prim) {
-			l->prim->ant = NULL;
+		No *p = l->prim;
+		if (p->prox) {
+			p->prox->ant = NULL;
+		} else {
+			l->ult = NULL;
 		}
+		l->prim = p->prox;
+		/*
+		 * Trecho de código omitido pois o exemplo não usa alocação dinâmica.
+		 */
+		// free(p);
 	}
 }
 
 void retira_final(Lista2 * l)
 {
-	No **p = &l->prim;
-
-	while (*p && (*p)->prox) {
-		p = &(*p)->prox;
-	}
-
-	if (*p) {
-		*p = NULL;
+	if (l->ult) {
+		No *p = l->ult;
+		if (p->ant) {
+			p->ant->prox = NULL;
+		} else {
+			l->prim = NULL;
+		}
+		l->ult = p->ant;
+		/*
+		 * Trecho de código omitido pois o exemplo não usa alocação dinâmica.
+		 */
+		// free(p);
 	}
 }
 
@@ -69,14 +81,11 @@ int main(void)
 		{"oito", v + 7, v + 9},
 		{"nove", v + 8, NULL}
 	};
-
-	Lista2 lst = { v };
-
+	Lista2 lst = { v, v + 9 };
 	imprime(&lst);
 	retira_inicio(&lst);
 	imprime(&lst);
 	retira_final(&lst);
 	imprime(&lst);
-
 	return 0;
 }

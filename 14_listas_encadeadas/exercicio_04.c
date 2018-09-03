@@ -25,7 +25,6 @@ struct lista {
 void concatena(Lista * l1, Lista * l2)
 {
 	No **p = &l1->prim;
-
 	while (*p) {
 		p = &(*p)->prox;
 	}
@@ -35,14 +34,10 @@ void concatena(Lista * l1, Lista * l2)
 
 void imprime(Lista * lst)
 {
-	No *p = lst->prim;
-	printf("[ ");
-	while (p) {
-		printf("%.2f ", p->info);
-		p = p->prox;
+	for (No * p = lst->prim; p; p = p->prox) {
+		printf("%.2f -> ", p->info);
 	}
-	printf("]");
-	puts("");
+	puts("NULL");
 }
 
 int main(void)
@@ -57,13 +52,10 @@ int main(void)
 	No no2 = { 2, &no3 };
 	No no1 = { 1, &no2 };
 	No no0 = { 0, &no1 };
-
 	Lista lst1 = { &no0 };
 	Lista lst2 = { &no5 };
-
 	concatena(&lst1, &lst2);
 	imprime(&lst1);
 	imprime(&lst2);
-
 	return 0;
 }

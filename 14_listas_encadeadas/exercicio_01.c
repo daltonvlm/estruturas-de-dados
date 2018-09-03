@@ -24,10 +24,8 @@ struct lista {
 int comprimento(Lista * l)
 {
 	int n = 0;
-	No *p = l->prim;
-	while (p) {
+	for (No * p = l->prim; p; p = p->prox) {
 		n++;
-		p = p->prox;
 	}
 	return n;
 }
@@ -45,7 +43,6 @@ int main(void)
 	No no1 = { 1, &no2 };
 	No no0 = { 0, &no1 };
 	Lista lst = { &no0 };
-
 	printf("comprimento = %d\n", comprimento(&lst));
 	return 0;
 }

@@ -24,12 +24,10 @@ struct lista {
 int maiores(Lista * l, int x)
 {
 	int n = 0;
-	No *p = l->prim;
-	while (p) {
-		if (p->info > x) {
+	for (No * no = l->prim; no; no = no->prox) {
+		if (no->info > x) {
 			n++;
 		}
-		p = p->prox;
 	}
 	return n;
 }
@@ -47,7 +45,6 @@ int main(void)
 	No no1 = { 1, &no2 };
 	No no0 = { 0, &no1 };
 	Lista lst = { &no0 };
-
-	printf("%d\n", maiores(&lst, 4));
+	printf("%d\n", maiores(&lst, -1));
 	return 0;
 }

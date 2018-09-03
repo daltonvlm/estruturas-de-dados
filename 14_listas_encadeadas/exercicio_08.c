@@ -29,24 +29,20 @@ struct lista {
 void inverte(Lista * l)
 {
 	No *ant = NULL;
-	No *p = l->prim;
-	while (p) {
-		No *t = p->prox;
+	for (No * p = l->prim; p; p = l->prim) {
+		l->prim = p->prox;
 		p->prox = ant;
 		ant = p;
-		p = t;
 	}
 	l->prim = ant;
 }
 
 static void imprime(Lista * lst)
 {
-	No *p = lst->prim;
-	while (p) {
-		printf("%.2f ", p->info);
-		p = p->prox;
+	for (No * p = lst->prim; p; p = p->prox) {
+		printf("%.2f -> ", p->info);
 	}
-	puts("");
+	puts("NULL");
 }
 
 int main(void)

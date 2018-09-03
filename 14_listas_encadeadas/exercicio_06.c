@@ -28,34 +28,38 @@ struct lista {
 	No *prim;
 };
 
+static void *aloca(size_t n)
+{
+	void *p = malloc(n);
+	if (!p) {
+		perror("");
+		exit(EXIT_FAILURE);
+	}
+	return p;
+}
+
 Lista *separa(Lista * l, int x)
 {
 	No *p = l->prim;
-	Lista *r = (Lista *) malloc(sizeof(Lista));
-	if (!r) {
-		perror("Erro");
-		exit(EXIT_FAILURE);
-	}
-	r->prim = NULL;
+	Lista *l2 = (Lista *) aloca(sizeof(Lista));
+	l2->prim = NULL;
 
 	while (p && p->info != x) {
 		p = p->prox;
 	}
 	if (p) {
-		r->prim = p->prox;
+		l2->prim = p->prox;
 		p->prox = NULL;
 	}
-	return r;
+	return l2;
 }
 
 void imprime(Lista * lst)
 {
-	No *p = lst->prim;
-	while (p) {
-		printf("%d ", p->info);
-		p = p->prox;
+	for (No * p = lst->prim; p; p = p->prox) {
+		printf("%d -> ", p->info);
 	}
-	puts("");
+	puts("NULL");
 }
 
 int main(void)
@@ -71,10 +75,9 @@ int main(void)
 	No no1 = { 1, &no2 };
 	No no0 = { 0, &no1 };
 	Lista lst = { &no0 };
-
+	Lista *lst2 = separa(&lst, 4);
 	imprime(&lst);
-	Lista *r = separa(&lst, 5);
-	imprime(r);
-	free(r);
+	imprime(lst2);
+	free(lst2);
 	return 0;
 }

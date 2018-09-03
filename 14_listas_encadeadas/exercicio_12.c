@@ -23,50 +23,44 @@ static void *aloca(int n)
 {
 	void *p = malloc(n);
 	if (!p) {
-		perror("Erro");
+		perror("");
 		exit(EXIT_FAILURE);
 	}
 	return p;
 }
 
-void insere(Lista * lst, int v)
+void insere(Lista * lst, int info)
 {
 	No *novo = (No *) aloca(sizeof(No));
-
-	novo->info = v;
+	novo->info = info;
 	novo->ant = novo->prox = novo;
-
 	if (lst->prim) {
 		novo->prox = lst->prim;
 		novo->ant = lst->prim->ant;
-
-		novo->prox->ant = novo;
 		novo->ant->prox = novo;
+		novo->prox->ant = novo;
 	}
 	lst->prim = novo;
 }
 
-void retira(Lista * lst, int v)
+void retira(Lista * lst, int info)
 {
-	No **p = &lst->prim;
-
-	if (*p) {
+	if (lst->prim) {
+		No **p = &lst->prim;
 		do {
-			if ((*p)->info == v) {
+			if ((*p)->info == info) {
 				break;
 			}
 			p = &(*p)->prox;
-		} while (*p != lst->prim);
-
-		if ((*p)->info == v) {
+		} while ((*p) != lst->prim);
+		if ((*p)->info == info) {
 			No *t = *p;
-
-			if (t->prox == t) {
+			if (t == t->prox) {
 				*p = NULL;
 			} else {
-				t->prox->ant = t->ant;
 				t->ant->prox = t->prox;
-				*p = t->prox;
+				t->prox->ant = t->ant;
+				*p = t->prox;	// Uma possível duplicação ncessária para o caso de *p == lst->prim
 			}
 			free(t);
 		}
@@ -100,19 +94,16 @@ static void libera(Lista * lst)
 
 int main(void)
 {
+	int n = 10;
 	Lista *lst = (Lista *) aloca(sizeof(Lista));
-
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < n; i++) {
 		insere(lst, i);
 	}
-
 	imprime(lst);
-
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < n; i++) {
 		retira(lst, i);
 		imprime(lst);
 	}
-
 	libera(lst);
 	return 0;
 }

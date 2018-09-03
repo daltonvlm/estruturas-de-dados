@@ -23,7 +23,6 @@ struct lista {
 int ultimo(Lista * l)
 {
 	No *p = l->prim;
-
 	if (p) {
 		while (p->prox) {
 			p = p->prox;

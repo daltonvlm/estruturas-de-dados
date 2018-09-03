@@ -27,17 +27,20 @@ struct lista {
 	No *prim;
 };
 
-Lista *merge(Lista * l1, Lista * l2)
+static void *aloca(size_t n)
 {
-	Lista *r = (Lista *) malloc(sizeof(Lista));
-	No **p;
-
-	if (!r) {
-		perror("Erro");
+	void *p = malloc(n);
+	if (!p) {
+		perror("");
 		exit(EXIT_FAILURE);
 	}
-	p = &r->prim;
+	return p;
+}
 
+Lista *merge(Lista * l1, Lista * l2)
+{
+	Lista *merge = (Lista *) aloca(sizeof(Lista));
+	No **p = &merge->prim;
 	while (l1->prim && l2->prim) {
 		No *t1 = l1->prim;
 		No *t2 = l2->prim;
@@ -49,27 +52,24 @@ Lista *merge(Lista * l1, Lista * l2)
 		*p = t1;
 		p = &t2->prox;
 	}
-
-	if (l1->prim) {
-		*p = l1->prim;
-		l1->prim = NULL;
-	} else {
-		*p = l2->prim;
-		l2->prim = NULL;
-	}
-	return r;
+	*p = l1->prim ? l1->prim : l2->prim;
+	l1->prim = NULL;
+	l2->prim = NULL;
+	/*
+	 * Trechos comentados omitidos devido ao fato do código de exemplo não usar alocação dinâmica
+	 * de memória.
+	 */
+	// free(l1);
+	// free(l2);
+	return merge;
 }
 
 static void imprime(Lista * lst)
 {
-	No *p = lst->prim;
-
-	printf("[ ");
-	while (p) {
-		printf("%.2f ", p->info);
-		p = p->prox;
+	for (No * p = lst->prim; p; p = p->prox) {
+		printf("%.2f -> ", p->info);
 	}
-	puts("]");
+	puts("NULL");
 }
 
 int main(void)
@@ -79,13 +79,11 @@ int main(void)
 	No no5 = { 5, &no7 };
 	No no3 = { 3, &no5 };
 	No no1 = { 1, &no3 };
-
 	No no8 = { 8, NULL };
 	No no6 = { 6, &no8 };
 	No no4 = { 4, &no6 };
 	No no2 = { 2, &no4 };
 	No no0 = { 0, &no2 };
-
 	Lista lst1 = { &no0 };
 	Lista lst2 = { &no1 };
 	Lista *lst;
@@ -105,6 +103,5 @@ int main(void)
 	imprime(lst);
 
 	free(lst);
-
 	return 0;
 }

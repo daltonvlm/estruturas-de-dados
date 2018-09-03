@@ -1,5 +1,5 @@
 /*
- * Considerando listas de valores inteiros, implemente uma função quer receba como
+ * Considerando listas de valores inteiros, implemente uma função que receba como
  * parâmetros uma lista encadeada e um valor inteiro x, e retire da lista todas as
  * ocorrências de x. Essa função deve obedecer ao protótipo:
  *
@@ -25,9 +25,14 @@ void retira_n(Lista * l, int x)
 {
 	No **p = &l->prim;
 	while (*p) {
-		printf("%d\n", (*p)->info);
 		if ((*p)->info == x) {
+			/* 
+			 * Os trechos comentados foram omitidos pois o código de exemplo não usa alocação
+			 * dinâmica.
+			 */
+			// No*t=*p;
 			*p = (*p)->prox;
+			// free(t);
 		} else {
 			p = &(*p)->prox;
 		}
@@ -47,12 +52,10 @@ int main(void)
 	No no1 = { 1, &no2 };
 	No no0 = { 2, &no1 };
 	Lista lst = { &no0 };
-
 	retira_n(&lst, 2);
-
 	for (No * p = lst.prim; p; p = p->prox) {
-		printf("%d ", p->info);
+		printf("%d -> ", p->info);
 	}
-	puts("");
+	puts("NULL");
 	return 0;
 }
