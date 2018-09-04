@@ -2,32 +2,33 @@
 #include <stdlib.h>
 #include "calc_cmplx.h"
 
-int operador(char c)
+static int eh_operador(char c)
 {
 	return '+' == c || '-' == c || '*' == c || '/' == c;
 }
 
 int main(void)
 {
-	Calc *c = calc_cria();
+	char op;
+	float a, b;
+	Calc *calc = calc_cria();
 	while (1) {
-		float a, b;
-		char op;
 		scanf(" %c", &op);
-		if (operador(op)) {
-			calc_operador(c, op);
-		} else if ('q' == op) {
+		if ('q' == op) {
 			break;
+		}
+		if (eh_operador(op)) {
+			calc_operador(calc, op);
 		} else {
 			ungetc(op, stdin);
-			if (scanf("(%f,%f)", &a, &b) != 2) {
-				fprintf(stderr, "Entrada invalida.\n");
-				exit(EXIT_FAILURE);
+			if (2 == scanf("(%f,%f)", &a, &b)) {
+				calc_operando(calc, a, b);
 			} else {
-				calc_operando(c, a, b);
+				fprintf(stderr, "Erro: entrada invalida.\n");
+				exit(EXIT_FAILURE);
 			}
 		}
 	}
-	calc_libera(c);
+	calc_libera(calc);
 	return 0;
 }

@@ -1,60 +1,66 @@
-#include "calc_cmplx.h"
-
 #include <stdio.h>
 #include <stdlib.h>
-#include "complexo.h"
+#include "calc_cmplx.h"
 #include "pilha_cmplx.h"
+#include "complexo.h"
 
 struct calc {
 	Pilha *p;
 };
 
-Calc *calc_cria(void)
+static void *aloca(size_t n)
 {
-	Calc *c = (Calc *) malloc(sizeof(Calc));
-	if (!c) {
-		perror("Erro");
+	void *p = malloc(n);
+	if (!p) {
+		perror("");
 		exit(EXIT_FAILURE);
 	}
-	c->p = pilha_cria();
-	return c;
+	return p;
+}
+
+Calc *calc_cria(void)
+{
+	Calc *calc = (Calc *) aloca(sizeof(Calc));
+	calc->p = pilha_cria();
+	return calc;
 }
 
 void calc_operando(Calc * c, float a, float b)
 {
-	Complexo *cmplx = cmplx_cria(a, b);
-	pilha_push(c->p, cmplx);
-	cmplx_imprime(cmplx);
+	Complexo *info = cmplx_cria(a, b);
+	pilha_push(c->p, info);
+	cmplx_imprime(info);
 }
 
 void calc_operador(Calc * c, char op)
 {
-	Complexo *cmplx2 = pilha_vazia(c->p) ?
-	    cmplx_cria(0, 0) : pilha_pop(c->p);
-
-	Complexo *cmplx1 = pilha_vazia(c->p) ?
-	    cmplx_cria(0, 0) : pilha_pop(c->p);
-
-	Complexo *r;
+	Complexo *info2 =
+	    pilha_vazia(c->p) ? cmplx_cria(0, 0) : pilha_pop(c->p);
+	Complexo *info1 =
+	    pilha_vazia(c->p) ? cmplx_cria(0, 0) : pilha_pop(c->p);
+	Complexo *info;
 
 	switch (op) {
 	case '+':
-		r = cmplx_soma(cmplx1, cmplx2);
+		info = cmplx_soma(info1, info2);
 		break;
 	case '-':
-		r = cmplx_subtrai(cmplx1, cmplx2);
+		info = cmplx_subtrai(info1, info2);
 		break;
 	case '*':
-		r = cmplx_multiplica(cmplx1, cmplx2);
+		info = cmplx_multiplica(info1, info2);
 		break;
 	case '/':
-		r = cmplx_divide(cmplx1, cmplx2);
+		info = cmplx_divide(info1, info2);
+		break;
+	default:
+		fprintf(stderr, "Erro: operador invalido.\n");
+		exit(EXIT_FAILURE);
 	}
-
-	cmplx_libera(cmplx1);
-	cmplx_libera(cmplx2);
-	cmplx_imprime(r);
-	pilha_push(c->p, r);
+	cmplx_libera(info1);
+	cmplx_libera(info2);
+	pilha_push(c->p, info);
+	cmplx_imprime(info);
 }
 
 void calc_libera(Calc * c)

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "calc.h"
 
-static int operador(char c)
+static int eh_operador(char c)
 {
 	return '+' == c || '-' == c || '*' == c || '/' == c || '#' == c
 	    || '^' == c;
@@ -11,22 +11,22 @@ static int operador(char c)
 int main(void)
 {
 	Calc *calc = calc_cria("%.2f\n");
+	char op;
+	float v;
 	while (1) {
-		char c;
-		scanf(" %c", &c);
-		if ('q' == c) {
+		scanf(" %c", &op);
+		if (eh_operador(op)) {
+			calc_operador(calc, op);
+		} else if ('q' == op) {
 			break;
-		}
-		if (!operador(c)) {
-			float v;
-			ungetc(c, stdin);
-			if (scanf("%f", &v) != 1) {
-				fprintf(stderr, "Erro na leitura\n");
+		} else {
+			ungetc(op, stdin);
+			if (1 == scanf("%f", &v)) {
+				calc_operando(calc, v);
+			} else {
+				fprintf(stderr, "Erro na leitura.\n");
 				exit(EXIT_FAILURE);
 			}
-			calc_operando(calc, v);
-		} else {
-			calc_operador(calc, c);
 		}
 	}
 	calc_libera(calc);

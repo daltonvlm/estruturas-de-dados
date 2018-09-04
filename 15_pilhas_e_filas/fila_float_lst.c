@@ -1,7 +1,6 @@
-#include "fila.h"
-
 #include <stdio.h>
 #include <stdlib.h>
+#include "fila_float.h"
 
 typedef struct no No;
 struct no {
@@ -14,11 +13,11 @@ struct fila {
 	No *fim;
 };
 
-static void *aloca(int n)
+static void *aloca(size_t n)
 {
 	void *p = malloc(n);
 	if (!p) {
-		perror("Erro");
+		perror("");
 		exit(EXIT_FAILURE);
 	}
 	return p;
@@ -27,40 +26,36 @@ static void *aloca(int n)
 Fila *fila_cria(void)
 {
 	Fila *f = (Fila *) aloca(sizeof(Fila));
-	f->ini = NULL;
-	f->fim = NULL;
+	f->ini = f->fim = NULL;
 	return f;
 }
 
 void fila_insere(Fila * f, float v)
 {
-	No *no = (No *) aloca(sizeof(No));
-	no->info = v;
-	no->prox = NULL;
-
-	if (f->fim) {
-		f->fim->prox = no;
+	No *novo = (No *) aloca(sizeof(No));
+	novo->info = v;
+	novo->prox = NULL;
+	if (!f->ini) {
+		f->ini = novo;
 	} else {
-		f->ini = no;
+		f->fim->prox = novo;
 	}
-	f->fim = no;
+	f->fim = novo;
 }
 
 float fila_retira(Fila * f)
 {
 	if (!f->ini) {
-		fprintf(stderr, "Erro: fila vazia\n");
+		fprintf(stderr, "Erro: fila vazia.\n");
 		exit(EXIT_FAILURE);
 	}
-	No *t = f->ini;
-	float v = t->info;
-
-	f->ini = t->prox;
+	No *prim = f->ini;
+	float v = prim->info;
+	f->ini = prim->prox;
 	if (!f->ini) {
 		f->fim = NULL;
 	}
-
-	free(t);
+	free(prim);
 	return v;
 }
 
@@ -81,9 +76,7 @@ void fila_libera(Fila * f)
 
 void fila_imprime(Fila * f)
 {
-	No *t = f->ini;
-	while (t) {
-		printf("%f\n", t->info);
-		t = t->prox;
+	for (No * prim = f->ini; prim; prim = prim->prox) {
+		printf("%.2f\n", prim->info);
 	}
 }

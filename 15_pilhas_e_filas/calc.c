@@ -1,31 +1,28 @@
-#include "calc.h"
-
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <math.h>
-#include "pilha.h"
+#include "calc.h"
+#include "pilha_float.h"
 
 struct calc {
-	char f[21];
+	char *fmt;
 	Pilha *p;
 };
 
-static void *aloca(int n)
+static void *aloca(size_t n)
 {
 	void *p = malloc(n);
 	if (!p) {
-		perror("Erro");
+		perror("");
 		exit(EXIT_FAILURE);
 	}
 	return p;
 }
 
-Calc *calc_cria(char *f)
+Calc *calc_cria(char *fmt)
 {
 	Calc *c = (Calc *) aloca(sizeof(Calc));
-
-	strcpy(c->f, f);
+	c->fmt = fmt;
 	c->p = pilha_cria();
 	return c;
 }
@@ -33,36 +30,39 @@ Calc *calc_cria(char *f)
 void calc_operando(Calc * c, float v)
 {
 	pilha_push(c->p, v);
-	printf(c->f, v);
+	printf(c->fmt, v);
 }
 
 void calc_operador(Calc * c, char op)
 {
-	float v2 = pilha_vazia(c->p) ? 0.f : pilha_pop(c->p);
-	float v1 = pilha_vazia(c->p) ? 0.f : pilha_pop(c->p);
-	float r = 0.f;
-
+	float v2 = pilha_vazia(c->p) ? 0 : pilha_pop(c->p);
+	float v1 = pilha_vazia(c->p) ? 0 : pilha_pop(c->p);
+	float v;
 	switch (op) {
 	case '+':
-		r = v1 + v2;
+		v = v1 + v2;
 		break;
 	case '-':
-		r = v1 - v2;
+		v = v1 - v2;
 		break;
 	case '*':
-		r = v1 * v2;
+		v = v1 * v2;
 		break;
 	case '/':
-		r = v1 / v2;
+		v = v1 / v2;
 		break;
 	case '#':
-		r = sqrt(v2);
+		v = sqrtf(v2);
+		pilha_push(c->p, v1);
 		break;
 	case '^':
-		r = pow(v1, v2);
+		v = powf(v1, v2);
+		break;
+	default:
+		fprintf(stderr, "Erro: operador '%c' invalido.\n", op);
+		exit(EXIT_FAILURE);
 	}
-	pilha_push(c->p, r);
-	printf(c->f, r);
+	calc_operando(c, v);
 }
 
 void calc_libera(Calc * c)

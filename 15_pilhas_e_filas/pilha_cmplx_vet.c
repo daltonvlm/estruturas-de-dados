@@ -1,7 +1,6 @@
-#include "pilha_cmplx.h"
-
 #include <stdio.h>
 #include <stdlib.h>
+#include "pilha_cmplx.h"
 #include "complexo.h"
 
 struct pilha {
@@ -10,20 +9,26 @@ struct pilha {
 	Complexo **vet;
 };
 
+static void check(void *p)
+{
+	if (!p) {
+		perror("");
+		exit(EXIT_FAILURE);
+	}
+}
+
+static void *aloca(size_t n)
+{
+	void *p = malloc(n);
+	return p;
+}
+
 Pilha *pilha_cria(void)
 {
-	Pilha *p = (Pilha *) malloc(sizeof(Pilha));
-	if (!p) {
-		perror("Erro");
-		exit(EXIT_FAILURE);
-	}
+	Pilha *p = (Pilha *) aloca(sizeof(Pilha));
 	p->dim = 4;
 	p->topo = 0;
-	p->vet = (Complexo **) malloc(p->dim * sizeof(Complexo *));
-	if (!p->vet) {
-		perror("Erro");
-		exit(EXIT_FAILURE);
-	}
+	p->vet = (Complexo **) aloca(p->dim * sizeof(Complexo *));
 	return p;
 }
 
@@ -33,10 +38,7 @@ void pilha_push(Pilha * p, Complexo * v)
 		p->dim *= 2;
 		p->vet =
 		    (Complexo **) realloc(p->vet, p->dim * sizeof(Complexo *));
-		if (!p->vet) {
-			perror("Erro");
-			exit(EXIT_FAILURE);
-		}
+		check(p->vet);
 	}
 	p->vet[p->topo++] = v;
 }
@@ -60,6 +62,7 @@ void pilha_libera(Pilha * p)
 	while (!pilha_vazia(p)) {
 		cmplx_libera(pilha_pop(p));
 	}
+	free(p->vet);
 	free(p);
 }
 

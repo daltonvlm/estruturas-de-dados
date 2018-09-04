@@ -10,4 +10,5 @@ Complexo *cmplx_subtrai(Complexo * c1, Complexo * c2);
 Complexo *cmplx_multiplica(Complexo * c1, Complexo * c2);
 Complexo *cmplx_divide(Complexo * c1, Complexo * c2);
 void cmplx_imprime(Complexo * c);
+
 #endif

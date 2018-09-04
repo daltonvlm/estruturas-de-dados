@@ -1,6 +1,8 @@
 #ifndef CALC_CMPLX_H
 #define CALC_CMPLX_H
 
+#include "complexo.h"
+
 typedef struct calc Calc;
 
 Calc *calc_cria(void);

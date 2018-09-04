@@ -27,7 +27,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "fila.h"
+#include "fila_float.h"
 
 void combina_filas(Fila * f_res, Fila * f1, Fila * f2)
 {

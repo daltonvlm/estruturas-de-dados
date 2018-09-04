@@ -44,10 +44,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "pilha.h"
+#include "pilha_float.h"
 
 float topo(Pilha * p)
 {
+	if (pilha_vazia(p)) {
+		fprintf(stderr, "Erro: pilha vazia.\n");
+		exit(EXIT_FAILURE);
+	}
 	float v = pilha_pop(p);
 	pilha_push(p, v);
 	return v;
@@ -62,14 +66,14 @@ void concatena_pilhas(Pilha * p1, Pilha * p2)
 	while (!pilha_vazia(t)) {
 		pilha_push(p1, pilha_pop(t));
 	}
-	free(t);
+	pilha_libera(t);
 }
 
 void concatena_pilhas_rec(Pilha * p1, Pilha * p2)
 {
 	if (!pilha_vazia(p2)) {
 		float v = pilha_pop(p2);
-		concatena_pilhas_rec(p1, p2);
+		concatena_pilhas(p1, p2);
 		pilha_push(p1, v);
 	}
 }
@@ -77,48 +81,77 @@ void concatena_pilhas_rec(Pilha * p1, Pilha * p2)
 Pilha *copia_pilha(Pilha * p)
 {
 	Pilha *t = pilha_cria();
-	Pilha *cp = pilha_cria();
+	Pilha *cpy = pilha_cria();
 	while (!pilha_vazia(p)) {
 		pilha_push(t, pilha_pop(p));
 	}
 	while (!pilha_vazia(t)) {
 		pilha_push(p, pilha_pop(t));
-		pilha_push(cp, topo(p));
+		pilha_push(cpy, topo(p));
 	}
-	free(t);
-	return cp;
+	pilha_libera(t);
+	return cpy;
 }
 
-static void copia(Pilha * cp, Pilha * orig)
+static void copia(Pilha * cpy, Pilha * orig)
 {
 	if (!pilha_vazia(orig)) {
 		float v = pilha_pop(orig);
-		copia(cp, orig);
+		copia(cpy, orig);
 		pilha_push(orig, v);
-		pilha_push(cp, v);
+		pilha_push(cpy, v);
 	}
 }
 
 Pilha *copia_pilha_rec(Pilha * p)
 {
-	Pilha *cp = pilha_cria();
-	copia(cp, p);
-	return cp;
+	Pilha *cpy = pilha_cria();
+	copia(cpy, p);
+	return cpy;
 }
 
 int main(void)
 {
-	Pilha *p1 = pilha_cria();
-	Pilha *p2;
+	Pilha *p1, *p2, *cpy;
+	float v;
+
+	p1 = pilha_cria();
+	p2 = pilha_cria();
 	for (int i = 0; i < 10; i++) {
-		pilha_push(p1, i);
+		if (i < 5) {
+			pilha_push(p1, i);
+		} else {
+			pilha_push(p2, i);
+		}
 	}
+
+	v = topo(p1);
+	printf("Topo de p1: %f\n", v);
+
+	puts("\nPilhas originais:");
 	puts("p1:");
 	pilha_imprime(p1);
-	p2 = copia_pilha_rec(p1);
-	puts("p2:");
+	puts("\np2:");
 	pilha_imprime(p2);
+
+	concatena_pilhas_rec(p1, p2);
+	puts("\nConcatena");
+	puts("p1:");
+	pilha_imprime(p1);
+	puts("\np2:");
+	pilha_imprime(p2);
+
+	cpy = copia_pilha_rec(p1);
+	puts("\nCopia");
+	puts("p1:");
+	pilha_imprime(p1);
+	puts("\np2:");
+	pilha_imprime(p2);
+	puts("\ncpy:");
+	pilha_imprime(cpy);
+
 	pilha_libera(p1);
 	pilha_libera(p2);
+	pilha_libera(cpy);
 	return 0;
 }

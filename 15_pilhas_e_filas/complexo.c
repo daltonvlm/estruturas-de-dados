@@ -1,6 +1,6 @@
-#include "complexo.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "complexo.h"
 
 struct complexo {
 	float a;
@@ -67,5 +67,5 @@ Complexo *cmplx_divide(Complexo * c1, Complexo * c2)
 
 void cmplx_imprime(Complexo * c)
 {
-	printf("%f + %fi\n", c->a, c->b);
+	printf("(%g,%g)\n", c->a, c->b);
 }
