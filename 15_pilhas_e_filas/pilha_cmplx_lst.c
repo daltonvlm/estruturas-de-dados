@@ -3,14 +3,14 @@
 #include "pilha_cmplx.h"
 #include "complexo.h"
 
-typedef struct no No;
-struct no {
+typedef struct listano ListaNo;
+struct listano {
 	Complexo *info;
-	No *prox;
+	ListaNo *prox;
 };
 
 struct pilha {
-	No *topo;
+	ListaNo *topo;
 };
 
 static void *aloca(size_t n)
@@ -32,7 +32,7 @@ Pilha *pilha_cria(void)
 
 void pilha_push(Pilha * p, Complexo * info)
 {
-	No *novo = (No *) aloca(sizeof(No));
+	ListaNo *novo = (ListaNo *) aloca(sizeof(ListaNo));
 	novo->info = info;
 	novo->prox = p->topo;
 	p->topo = novo;
@@ -44,7 +44,7 @@ Complexo *pilha_pop(Pilha * p)
 		fprintf(stderr, "Erro: pilha vazia.\n");
 		exit(EXIT_FAILURE);
 	}
-	No *topo = p->topo;
+	ListaNo *topo = p->topo;
 	Complexo *info = topo->info;
 	p->topo = topo->prox;
 	free(topo);
@@ -59,7 +59,7 @@ int pilha_vazia(Pilha * p)
 void pilha_libera(Pilha * p)
 {
 	while (p->topo) {
-		No *t = p->topo;
+		ListaNo *t = p->topo;
 		p->topo = t->prox;
 		cmplx_libera(t->info);
 		free(t);
@@ -69,7 +69,7 @@ void pilha_libera(Pilha * p)
 
 void pilha_imprime(Pilha * p)
 {
-	for (No * topo = p->topo; topo; topo = topo->prox) {
+	for (ListaNo * topo = p->topo; topo; topo = topo->prox) {
 		cmplx_imprime(topo->info);
 	}
 }
