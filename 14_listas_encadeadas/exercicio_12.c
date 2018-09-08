@@ -3,22 +3,6 @@
  * mente encadeada.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
-typedef struct no No;
-typedef struct lista Lista;
-
-struct no {
-	int info;
-	No *ant;
-	No *prox;
-};
-
-struct lista {
-	No *prim;
-};
-
 static void *aloca(int n)
 {
 	void *p = malloc(n);
@@ -31,22 +15,22 @@ static void *aloca(int n)
 
 void insere(Lista * lst, int info)
 {
-	No *novo = (No *) aloca(sizeof(No));
-	novo->info = info;
-	novo->ant = novo->prox = novo;
+	ListaNo *p = (ListaNo *) aloca(sizeof(ListaNo));
+	p->info = info;
+	p->ant = p->prox = p;
 	if (lst->prim) {
-		novo->prox = lst->prim;
-		novo->ant = lst->prim->ant;
-		novo->ant->prox = novo;
-		novo->prox->ant = novo;
+		p->prox = lst->prim;
+		p->ant = lst->prim->ant;
+		p->ant->prox = p;
+		p->prox->ant = p;
 	}
-	lst->prim = novo;
+	lst->prim = p;
 }
 
 void retira(Lista * lst, int info)
 {
 	if (lst->prim) {
-		No **p = &lst->prim;
+		ListaNo **p = &lst->prim;
 		do {
 			if ((*p)->info == info) {
 				break;
@@ -54,7 +38,7 @@ void retira(Lista * lst, int info)
 			p = &(*p)->prox;
 		} while ((*p) != lst->prim);
 		if ((*p)->info == info) {
-			No *t = *p;
+			ListaNo *t = *p;
 			if (t == t->prox) {
 				*p = NULL;
 			} else {
@@ -65,45 +49,4 @@ void retira(Lista * lst, int info)
 			free(t);
 		}
 	}
-}
-
-static void imprime(Lista * lst)
-{
-	No *p = lst->prim;
-	if (p) {
-		do {
-			printf("%d ", p->info);
-			p = p->prox;
-		} while (p != lst->prim);
-	}
-	puts("");
-}
-
-static void libera(Lista * lst)
-{
-	No *p = lst->prim;
-	if (p) {
-		do {
-			No *t = p;
-			p = p->prox;
-			free(t);
-		} while (p != lst->prim);
-	}
-	free(lst);
-}
-
-int main(void)
-{
-	int n = 10;
-	Lista *lst = (Lista *) aloca(sizeof(Lista));
-	for (int i = 0; i < n; i++) {
-		insere(lst, i);
-	}
-	imprime(lst);
-	for (int i = 0; i < n; i++) {
-		retira(lst, i);
-		imprime(lst);
-	}
-	libera(lst);
-	return 0;
 }
