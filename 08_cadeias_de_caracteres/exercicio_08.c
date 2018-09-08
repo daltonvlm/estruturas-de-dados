@@ -9,10 +9,6 @@
  *      char* converte (char* s);
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 static int eh_letra(char c)
 {
 	return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
@@ -34,20 +30,4 @@ char *converte(char *s)
 		strcpy(conv, def);
 	}
 	return conv;
-}
-
-int main(void)
-{
-	char s[81];
-	char *conv;
-	while (1) {
-		printf("Texto: ");
-		scanf(" %80[^\n]", s);
-		conv = converte(s);
-		if (conv) {
-			puts(conv);
-			free(conv);
-		}
-	}
-	return 0;
 }

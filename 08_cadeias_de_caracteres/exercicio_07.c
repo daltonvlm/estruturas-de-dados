@@ -11,10 +11,6 @@
  * Assuma que a cadeia original terá sempre mais do que n caracteres.
  */
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-
 char *retira_sufixo(char *s, int n)
 {
 	int len = strlen(s) - n;
@@ -26,22 +22,4 @@ char *retira_sufixo(char *s, int n)
 		}
 	}
 	return r;
-}
-
-int main(void)
-{
-	int n;
-	char str[81], *r;
-	while (1) {
-		printf("Texto: ");
-		scanf(" %80[^\n]", str);
-		printf("Quantidade: ");
-		scanf("%d", &n);
-		r = retira_sufixo(str, n);
-		if (r) {
-			puts(r);
-			free(r);
-		}
-	}
-	return 0;
 }

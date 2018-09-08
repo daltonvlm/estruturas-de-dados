@@ -8,10 +8,6 @@
  *      char* concatena (char* s1, char* s2, char sep);
  */
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-
 char *concatena(char *s1, char *s2, char sep)
 {
 	char *r = (char *)malloc(strlen(s1) + strlen(s2) + 1);
@@ -22,24 +18,4 @@ char *concatena(char *s1, char *s2, char sep)
 		while (*t++ = *s2++) ;
 	}
 	return r;
-}
-
-int main(void)
-{
-	char *s, s1[81], s2[81];
-	char sep;
-	while (1) {
-		printf("Texto 1: ");
-		scanf(" %80[^\n]", s1);
-		printf("Texto 2: ");
-		scanf(" %80[^\n]", s2);
-		printf("Separador: ");
-		scanf(" %c", &sep);
-		s = concatena(s1, s2, sep);
-		if (s) {
-			puts(s);
-			free(s);
-		}
-	}
-	return 0;
 }

@@ -7,9 +7,6 @@
  *      void roda_string (char* str);
  */
 
-#include <stdio.h>
-#include <string.h>
-
 void roda_string(char *str)
 {
 	char atual = str[0];
@@ -20,16 +17,4 @@ void roda_string(char *str)
 		str[prox] = atual;
 		atual = tmp;
 	}
-}
-
-int main(void)
-{
-	char s[81];
-	while (1) {
-		printf("Texto: ");
-		scanf(" %80[^\n]", s);
-		roda_string(s);
-		puts(s);
-	}
-	return 0;
 }

@@ -7,8 +7,6 @@
  *      void string_oposta (char* str);
  */
 
-#include <stdio.h>
-
 static int eh_maiusculo_minusculo(char c)
 {
 	if (c >= 'A' && c <= 'Z') {
@@ -34,16 +32,4 @@ void string_oposta(char *str)
 		}
 		i++;
 	}
-}
-
-int main(void)
-{
-	char s[81];
-	while (1) {
-		printf("Texto: ");
-		scanf(" %80[^\n]", s);
-		string_oposta(s);
-		puts(s);
-	}
-	return 0;
 }
