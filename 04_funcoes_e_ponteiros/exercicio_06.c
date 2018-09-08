@@ -11,8 +11,6 @@
  *      int coeficiente (int n, int k);
  */
 
-#include <stdio.h>
-
 int coeficiente(int n, int k)
 {
 	if (n < k) {
@@ -23,15 +21,4 @@ int coeficiente(int n, int k)
 		return 1;
 	}
 	return coeficiente(n - 1, k) + coeficiente(n - 1, k - 1);
-}
-
-int main(void)
-{
-	int n, k;
-
-	printf("n, k: ");
-	scanf("%d %d", &n, &k);
-
-	printf("C(%d, %d) = %d\n", n, k, coeficiente(n, k));
-	return 0;
 }
