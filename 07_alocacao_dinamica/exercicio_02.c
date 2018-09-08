@@ -8,21 +8,13 @@
  *      int* somente_pares (int n, int* v, int* npares);
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
-static void check(void *p)
+static void *aloca(size_t n)
 {
+	void *p = malloc(n);
 	if (!p) {
 		perror("Erro:");
 		exit(EXIT_FAILURE);
 	}
-}
-
-static void *aloca(size_t n)
-{
-	void *p = malloc(n);
-	check(p);
 	return p;
 }
 
@@ -43,36 +35,4 @@ int *somente_pares(int n, int *v, int *npares)
 		}
 	}
 	return pares;
-}
-
-static void popula(int n, int *v)
-{
-	puts("Entre com os valores:");
-	for (int i = 0; i < n; i++) {
-		scanf("%d", v + i);
-	}
-}
-
-static void imprime(int n, int *v, char *fmt, char *end)
-{
-	for (int i = 0; i < n; i++) {
-		printf(fmt, v[i]);
-	}
-	printf(end);
-}
-
-int main(void)
-{
-	int *v, *pares;
-	int n, npares;
-	while (1) {
-		printf("Entre com o tamanho do vetor: ");
-		scanf("%d", &n);
-		v = (int *)aloca(n * sizeof(int));
-		popula(n, v);
-		pares = somente_pares(n, v, &npares);
-		imprime(npares, pares, "%d ", "\n");
-		free(pares);
-	}
-	return 0;
 }

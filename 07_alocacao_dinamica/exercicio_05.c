@@ -19,18 +19,13 @@
 #include <stdlib.h>
 #include <time.h>
 
-static void check(void *p)
+static void *aloca(size_t n)
 {
+	void *p = malloc(n);
 	if (!p) {
 		perror("Erro:");
 		exit(EXIT_FAILURE);
 	}
-}
-
-static void *aloca(size_t n)
-{
-	void *p = malloc(n);
-	check(p);
 	return p;
 }
 

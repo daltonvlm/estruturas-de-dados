@@ -4,22 +4,13 @@
  * transposto aos elementos.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
-static void check(void *p)
+static void *aloca(size_t n)
 {
+	void *p = malloc(n);
 	if (!p) {
 		perror("Erro");
 		exit(EXIT_FAILURE);
 	}
-}
-
-static void *aloca(size_t n)
-{
-	void *p = malloc(n);
-	check(p);
 	return p;
 }
 
@@ -53,27 +44,4 @@ void ts_libera(int n, float **mat)
 		free(mat[i]);
 	}
 	free(mat);
-}
-
-int main(void)
-{
-	int n = 3;
-	float **mat = (float **)ts_cria(n);
-
-	srand(time(NULL));
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			int x = rand() % 10;
-			printf("Gerado valor %d\n", x);
-			ts_atribui(i, j, x, mat);
-		}
-	}
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			printf("%.1f ", ts_acessa(i, j, mat));
-		}
-		puts("");
-	}
-	ts_libera(n, mat);
-	return 0;
 }
