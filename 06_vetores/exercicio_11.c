@@ -9,12 +9,6 @@
  *      int triangular_inferior (double A[][N]);
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
-#define N 3
-
 int triangular_inferior(double A[][N])
 {
 	for (int i = 0; i < N; i++) {
@@ -25,38 +19,4 @@ int triangular_inferior(double A[][N])
 		}
 	}
 	return 1;
-}
-
-void imprime(double A[][N])
-{
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
-			printf("%6.2f ", A[i][j]);
-		}
-		puts("");
-	}
-}
-
-int main(void)
-{
-	int max = 400;
-	double m[N][N];
-
-	srand(time(NULL));
-	puts("\nGerando matriz triangular inferior...");
-	while (1) {
-		for (int i = 0; i < N; i++) {
-			m[i][i] = rand() % max;
-			for (int j = 0; j < i; j++) {
-				m[i][j] = rand() % max;
-				m[j][i] = rand() % max;
-			}
-		}
-		if (triangular_inferior(m)) {
-			imprime(m);
-			printf("\nTecle Enter para continuar: ");
-			getchar();
-			puts("\nGerando matriz triangular inferior...");
-		}
-	}
 }

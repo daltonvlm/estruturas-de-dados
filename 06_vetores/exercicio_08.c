@@ -17,11 +17,6 @@
  * que a sequência não constitui uma PA.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
-#define N 10
-
 int testa_PA(int n, int *v)
 {
 	int k = v[1] - v[0];
@@ -31,27 +26,4 @@ int testa_PA(int n, int *v)
 		}
 	}
 	return k;
-}
-
-int main(void)
-{
-	int vet[N];
-	while (1) {
-		int n;
-		printf("Entre com o numero de elementos (valor maximo = %d): ",
-		       N);
-		scanf("%d", &n);
-		if (n < 0 || n > N) {
-			fprintf(stderr, "Entrada invalida.\n");
-			continue;
-		} else if (!n) {
-			break;
-		}
-		puts("Entre com os valores:");
-		for (int i = 0; i < n; i++) {
-			scanf("%d", vet + i);
-		}
-		printf("%s\n", testa_PA(n, vet) ? "E PA" : "Nao e PA");
-	}
-	return 0;
 }

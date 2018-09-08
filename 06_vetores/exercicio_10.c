@@ -22,31 +22,10 @@
  *      void histograma (int n, float *v, int *h);
  */
 
-#include <stdio.h>
-
 void histograma(int n, float *v, int *h)
 {
 	for (int i = 0; i < n; i++) {
 		int x = 10 * v[i];
 		h[x]++;
 	}
-}
-
-int main(void)
-{
-	float v[12] =
-	    { 0.11, 0.2, 0.03, 0.56, 0.323, 0.345, 0.234, 0.56, 0.6546, 0.123,
-		0.123, 0.999
-	};
-	int h[10] = { 0 };
-	histograma(12, v, h);
-	for (int i = 0; i < 10; i++) {
-		printf("%.1f\t", i / 10.);
-	}
-	puts("");
-	for (int i = 0; i < 10; i++) {
-		printf("%3d\t", h[i]);
-	}
-	puts("");
-	return 0;
 }
