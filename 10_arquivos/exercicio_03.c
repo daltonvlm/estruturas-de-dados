@@ -37,57 +37,6 @@
  * "Erro" e terminar a execução do programa.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#define N 10
-
-typedef struct funcionario Funcionario;
-struct funcionario {
-	char nome[81];		// nome do funcionário
-	float valor_hora;	// valor da hora de trabalho em Reais
-	int horas_mes;		// horas trabalhadas em um mês
-};
-
-static void check(void *p)
-{
-	if (!p) {
-		perror("");
-		exit(EXIT_FAILURE);
-	}
-}
-
-static void *aloca(size_t n)
-{
-	void *p = malloc(n);
-	check(p);
-	return p;
-}
-
-Funcionario *cria_funcionario(char *nome, float valor_hora, int horas_mes)
-{
-	Funcionario *p = (Funcionario *) aloca(sizeof(Funcionario));
-	strcpy(p->nome, nome);
-	p->valor_hora = valor_hora;
-	p->horas_mes = horas_mes;
-	return p;
-}
-
-static void libera_funcionarios(int n, Funcionario ** vet)
-{
-	for (int i = 0; i < n; i++) {
-		free(vet[i]);
-	}
-}
-
-static void imprime_funcionario(Funcionario * f)
-{
-	printf("\nNome: %s\n", f->nome);
-	printf("Valor/hora: %.2f\n", f->valor_hora);
-	printf("Horas/mes: %d\n", f->horas_mes);
-}
-
 void carrega(int n, Funcionario ** vet, char *arquivo)
 {
 	char nome[81];
@@ -106,17 +55,4 @@ void carrega(int n, Funcionario ** vet, char *arquivo)
 		}
 	}
 	fclose(fp);
-}
-
-int main(void)
-{
-	Funcionario *vet[N] = { NULL };
-	carrega(N, vet, "funcionarios.txt");
-	for (int i = 0; i < N; i++) {
-		if (vet[i]) {
-			imprime_funcionario(vet[i]);
-		}
-	}
-	libera_funcionarios(N, vet);
-	return 0;
 }

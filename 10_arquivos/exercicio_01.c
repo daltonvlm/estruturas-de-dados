@@ -24,10 +24,6 @@
  * a função deve imprimir a mensagem "Erro" e terminar a execução do programa.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 float media(char *mat, char *nome_arquivo)
 {
 	char linha[81], m[10];
@@ -47,25 +43,4 @@ float media(char *mat, char *nome_arquivo)
 	}
 	fclose(fp);
 	return md;
-}
-
-int main(void)
-{
-	char mat[10], fname[81];
-	float md;
-	while (1) {
-		printf("\nInforme o nome do arquivo: ");
-		scanf("%80s", fname);
-		printf("Informe a matricula do aluno: ");
-		scanf("%9s", mat);
-		md = media(mat, fname);
-		if (-1 == md) {
-			fprintf(stderr,
-				"Aluno com matricula '%s' nao encontrado.\n",
-				mat);
-		} else {
-			printf("Media = %.1f\n", md);
-		}
-	}
-	return 0;
 }

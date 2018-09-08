@@ -40,24 +40,6 @@
  * do que 80 caracteres.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-typedef struct aluno Aluno;
-struct aluno {
-	char mat[8];		// matricula do aluno
-	char nome[81];		// nome do aluno
-	float cr;		// coeficiente de rendimento
-};
-
-static void imprime_aluno(Aluno a)
-{
-	printf("\nMatricula: %s\n", a.mat);
-	printf("Nome: %s\n", a.nome);
-	printf("CR: %.1f\n", a.cr);
-}
-
 Aluno *carrega(char *arquivo, int *n)
 {
 	int i = 0;
@@ -89,17 +71,4 @@ Aluno *carrega(char *arquivo, int *n)
 	}
 	fclose(fp);
 	return alunos;
-}
-
-int main(void)
-{
-	int n;
-	Aluno *alunos = carrega("alunos.txt", &n);
-	if (alunos) {
-		for (int i = 0; i < n; i++) {
-			imprime_aluno(alunos[i]);
-		}
-	}
-	free(alunos);
-	return 0;
 }
