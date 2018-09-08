@@ -22,15 +22,6 @@
  * no meio vetor.
  */
 
-#include <stdio.h>
-
-typedef struct aluno Aluno;
-struct aluno {
-	char mat[8];		// matrícula do aluno
-	char nome[81];		// nome do aluno
-	float cr;		// coeficiente de rendimento
-};
-
 static void ordena_alunos(int n, Aluno * v)
 {
 	if (n > 1) {
@@ -63,22 +54,4 @@ void mediano(int n, Aluno * v)
 {
 	ordena_alunos(n, v);
 	printf("Aluno mediano: %s\n", v[n / 2].nome);
-}
-
-int main(void)
-{
-	Aluno va[7] = {
-		{"Mat f", "Aluno F", 6.f},
-		{"Mat b", "Aluno B", 2.f},
-		{"Mat e", "Aluno E", 5.f},
-		{"Mat c", "Aluno C", 3.f},
-		{"Mat a", "Aluno A", 1.f},
-		{"Mat g", "Aluno G", 7.f},
-		{"Mat d", "Aluno D", 4.f}
-	};
-	for (int i = 0; i < 7; i++) {
-		printf("%s\t%s\t%.2f\n", va[i].mat, va[i].nome, va[i].cr);
-	}
-	mediano(7, va);
-	return 0;
 }

@@ -20,17 +20,6 @@
  * 		Funcionario* busca (int n, Funcionario** v, char* nome);
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-typedef struct funcionario Funcionario;
-struct funcionario {
-	char nome[81];
-	float valor_hora;
-	int horas_mes;
-};
-
 Funcionario *busca(int n, Funcionario ** v, char *nome)
 {
 	int i = 0;
@@ -47,27 +36,4 @@ Funcionario *busca(int n, Funcionario ** v, char *nome)
 		}
 	}
 	return NULL;
-}
-
-int main(void)
-{
-	Funcionario vf[7] = {
-		{"Funcionario A", 0, 0},
-		{"Funcionario B", 0, 0},
-		{"Funcionario C", 0, 0},
-		{"Funcionario D", 0, 0},
-		{"Funcionario E", 0, 0},
-		{"Funcionario F", 0, 0},
-		{"Funcionario G", 0, 0}
-	};
-	Funcionario *vpf[7] =
-	    { vf, vf + 1, vf + 2, vf + 3, vf + 4, vf + 5, vf + 6 };
-	char nome[81];
-	while (1) {
-		printf("Nome: ");
-		scanf(" %80[^\n]", nome);
-		Funcionario *pf = busca(7, vpf, nome);
-		printf("'%s' %sencontrado\n", nome, pf ? "" : "nao ");
-	}
-	return 0;
 }

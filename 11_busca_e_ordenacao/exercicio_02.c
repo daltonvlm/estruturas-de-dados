@@ -22,15 +22,6 @@
  * 		Pessoa* busca (int n, Pessoa** v, int dia, int mes, int ano);
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
-typedef struct pessoa Pessoa;
-struct pessoa {
-	char nome[81];		// nome
-	int dia, mes, ano;	// data de nascimento
-};
-
 static int compara_pessoa_data(Pessoa * info, Pessoa * elem)
 {
 	int ano = info->ano - elem->ano;
@@ -56,27 +47,4 @@ Pessoa *busca(int n, Pessoa ** v, int dia, int mes, int ano)
 		}
 	}
 	return NULL;
-}
-
-int main(void)
-{
-	Pessoa vp[6] = {
-		{"John McCarthy", 4, 9, 1927},
-		{"Dennis Ritchie", 9, 9, 1941},
-		{"Bjarne Stroustrup", 30, 12, 1950},
-		{"James Gosling", 19, 5, 1955},
-		{"Guido van Rossum", 31, 1, 1956},
-		{"Yukihir Matsumoto", 14, 4, 1965}
-	};
-	Pessoa *vpp[6] = { vp, vp + 1, vp + 2, vp + 3, vp + 4, vp + 5 };
-	char buf[121];
-	int dia, mes, ano;
-	while (1) {
-		printf("Data (dia, mes, ano): ");
-		fgets(buf, sizeof(buf), stdin);
-		sscanf(buf, "%d %d %d", &dia, &mes, &ano);
-		Pessoa *pp = busca(6, vpp, dia, mes, ano);
-		puts(pp ? pp->nome : "Nenhuma pessoa encontrada.");
-	}
-	return 0;
 }

@@ -20,9 +20,6 @@
  * 		int mais_proximo (int n, int* vet, int x);
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 int mais_proximo(int n, int *vet, int x)
 {
 	int i = 0;
@@ -56,19 +53,4 @@ int mais_proximo(int n, int *vet, int x)
 		}
 	}
 	return vet[i];
-}
-
-int main(void)
-{
-	int v[5] = { 3, 7, 10, 14, 16 };
-
-	for (int i = 0; i < 5; i++) {
-		printf("%d ", v[i]);
-	}
-	puts("");
-	for (int i = 2; i < 18; i++) {
-		int mp = mais_proximo(6, v, i);
-		printf("%d -> %d\n", i, mp);
-	}
-	return 0;
 }

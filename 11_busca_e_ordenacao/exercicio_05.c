@@ -13,16 +13,6 @@
  * usando alguma das técnicas de ordenação apresentadas.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
-typedef struct funcionario Funcionario;
-struct funcionario {
-	char nome[81];
-	float valor_hora;
-	int horas_mes;
-};
-
 static float calcula_salario(Funcionario * f)
 {
 	return f->valor_hora * f->horas_mes;
@@ -49,25 +39,4 @@ void imprime_marajas(int n, Funcionario ** vet)
 	for (int i = 0; i < 5 && i < n; i++) {
 		printf("%s: R$ %.2f\n", vet[i]->nome, calcula_salario(vet[i]));
 	}
-}
-
-int main(void)
-{
-	Funcionario vf[7] = {
-		{"A", 50, 60},
-		{"B", 40, 80},
-		{"C", 30, 120},
-		{"D", 50, 50},
-		{"E", 50, 60},
-		{"F", 60, 200},
-		{"G", 90, 60}
-	};
-	Funcionario *vpf[] =
-	    { vf, vf + 1, vf + 2, vf + 3, vf + 4, vf + 5, vf + 6 };
-	for (int i = 0; i < 7; i++) {
-		printf("Nome: %s\tSalario: %.2f\n", vf[i].nome,
-		       calcula_salario(vf + i));
-	}
-	imprime_marajas(7, vpf);
-	return 0;
 }

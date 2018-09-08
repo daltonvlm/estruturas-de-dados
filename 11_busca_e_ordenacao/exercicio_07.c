@@ -11,16 +11,6 @@
  * resulta em partições mais equilibradas.
  */
 
-#include <stdio.h>
-
-static void imprime(int n, int *v)
-{
-	for (int i = 0; i < n; i++) {
-		printf("%d ", v[i]);
-	}
-	puts("");
-}
-
 static void ajusta_pivo(int n, int *v)
 {
 	int p[] = { 0, n / 2, n - 1 };
@@ -80,15 +70,4 @@ void rapida(int n, int *v)
 	v[b] = x;
 	rapida(b, v);
 	rapida(n - a, v + a);
-}
-
-#define N 10
-
-int main(void)
-{
-	int v[N] = { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
-	rapida(N, v);
-	puts("Vetor ordenado:");
-	imprime(N, v);
-	return 0;
 }

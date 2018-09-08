@@ -1,13 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static int compara_int(const void *a, const void *b)
-{
-	int *p1 = (int *)a;
-	int *p2 = (int *)b;
-	return *p1 - *p2;
-}
-
 static void *acessa(void *v, int i, size_t tam)
 {
 	return ((char *)v) + (i * tam);
@@ -125,17 +118,4 @@ void quick_sort(void *v, int n, size_t tam,
 	troca(v, pb, tam);
 	quick_sort(v, b, tam, cmp);
 	quick_sort(pa, n - a, tam, cmp);
-}
-
-int main(void)
-{
-	int n = 10;
-	int v[] = { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
-
-	quick_sort((void *)v, n, sizeof(int), compara_int);
-	for (int i = 0; i < n; i++)
-		printf("%d ", v[i]);
-	printf("\n");
-
-	return 0;
 }
