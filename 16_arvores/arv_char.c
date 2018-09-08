@@ -1,7 +1,8 @@
-#include "arv.h"
-
 #include <stdio.h>
 #include <stdlib.h>
+#include "arv_char.h"
+
+#define TAB "  "
 
 struct arvno {
 	char info;
@@ -17,26 +18,26 @@ static void *aloca(size_t n)
 {
 	void *p = malloc(n);
 	if (!p) {
-		perror("Erro");
+		perror("");
 		exit(EXIT_FAILURE);
 	}
 	return p;
 }
 
-Arv *arv_cria(ArvNo * r)
+Arv *arv_cria(ArvNo * raiz)
 {
 	Arv *a = (Arv *) aloca(sizeof(Arv));
-	a->raiz = r;
+	a->raiz = raiz;
 	return a;
 }
 
 ArvNo *arv_criano(char c, ArvNo * esq, ArvNo * dir)
 {
-	ArvNo *p = (ArvNo *) aloca(sizeof(ArvNo));
-	p->info = c;
-	p->esq = esq;
-	p->dir = dir;
-	return p;
+	ArvNo *arvno = (ArvNo *) aloca(sizeof(ArvNo));
+	arvno->info = c;
+	arvno->esq = esq;
+	arvno->dir = dir;
+	return arvno;
 }
 
 static void libera(ArvNo * r)
@@ -54,17 +55,17 @@ void arv_libera(Arv * a)
 	free(a);
 }
 
-static void imprime(ArvNo * r, int n)
+static void imprime(ArvNo * r, int ntabs)
 {
-	for (int i = 0; i < n; i++) {
-		printf("|  ");
+	for (int i = 0; i < ntabs; i++) {
+		printf("|%s", TAB);
 	}
 	if (r) {
 		printf("%c\n", r->info);
-		imprime(r->esq, n + 1);
-		imprime(r->dir, n + 1);
+		imprime(r->esq, ntabs + 1);
+		imprime(r->dir, ntabs + 1);
 	} else {
-		puts("X");
+		puts("x");
 	}
 }
 
@@ -73,11 +74,11 @@ void arv_imprime(Arv * a)
 	imprime(a->raiz, 0);
 }
 
-int pertence(ArvNo * r, char c)
+static int pertence(ArvNo * r, char c)
 {
 	if (r) {
-		return r->info == c || pertence(r->esq, c)
-		    || pertence(r->dir, c);
+		return r->info == c ||
+		    pertence(r->esq, c) || pertence(r->dir, c);
 	}
 	return 0;
 }
@@ -93,11 +94,8 @@ static ArvNo *busca(ArvNo * r, char c)
 		if (r->info == c) {
 			return r;
 		}
-		ArvNo *no = busca(r->esq, c);
-		if (!no) {
-			no = busca(r->dir, c);
-		}
-		return no;
+		ArvNo *sub = busca(r->esq, c);
+		return sub ? sub : busca(r->dir, c);
 	}
 	return NULL;
 }
@@ -114,10 +112,10 @@ static int max2(int a, int b)
 
 static int altura(ArvNo * r)
 {
-	if (!r) {
-		return -1;
+	if (r) {
+		return 1 + max2(altura(r->esq), altura(r->dir));
 	}
-	return 1 + max2(altura(r->esq), altura(r->dir));
+	return -1;
 }
 
 int arv_altura(Arv * a)

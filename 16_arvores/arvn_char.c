@@ -1,11 +1,13 @@
-#include "arvn.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "arvn_char.h"
+
+#define TAB "  "
 
 struct arvnno {
 	char info;
-	ArvnNo *prim;		// ponteiro para o primeiro eventual filho
-	ArvnNo *prox;		// ponteiro para o primeiro eventual irmao
+	ArvnNo *prim;
+	ArvnNo *prox;
 };
 
 struct arvn {
@@ -16,7 +18,7 @@ static void *aloca(size_t n)
 {
 	void *p = malloc(n);
 	if (!p) {
-		perror("Erro");
+		perror("");
 		exit(EXIT_FAILURE);
 	}
 	return p;
@@ -44,20 +46,21 @@ Arvn *arvn_cria(ArvnNo * r)
 	return a;
 }
 
-static void imprime(ArvnNo * r)
+static void imprime(ArvnNo * r, int ntabs)
 {
-	printf("< %c ", r->info);
-	for (ArvnNo * p = r->prim; p; p = p->prox) {
-		imprime(p);
+	for (int i = 0; i < ntabs; i++) {
+		printf("|%s", TAB);
 	}
-	printf(">");
+	printf("%c\n", r->info);
+	for (ArvnNo * p = r->prim; p; p = p->prox) {
+		imprime(p, ntabs + 1);
+	}
 }
 
 void arvn_imprime(Arvn * a)
 {
 	if (a->raiz) {
-		imprime(a->raiz);
-		puts("");
+		imprime(a->raiz, 0);
 	}
 }
 
@@ -77,19 +80,16 @@ static ArvnNo *busca(ArvnNo * r, char c)
 
 ArvnNo *arvn_busca(Arvn * a, char c)
 {
-	if (a->raiz) {
-		return busca(a->raiz, c);
-	}
-	return NULL;
+	return a->raiz ? busca(a->raiz, c) : NULL;
 }
 
 static void libera(ArvnNo * r)
 {
 	ArvnNo *p = r->prim;
 	while (p) {
-		ArvnNo *t = p;
-		p = p->prox;
-		libera(t);
+		ArvnNo *t = p->prox;
+		libera(p);
+		p = t;
 	}
 	free(r);
 }
@@ -116,8 +116,22 @@ static int altura(ArvnNo * r)
 
 int arvn_altura(Arvn * a)
 {
-	if (a->raiz) {
-		return altura(a->raiz);
-	}
-	return -1;
+	return a->raiz ? altura(a->raiz) : -1;
 }
+
+/*
+static int max2(int a, int b)
+{
+	return a > b ? a : b;
+}
+
+static int altura(ArvnNo * r)
+{
+	return r ? max2(1 + altura(r->prim), altura(r->prox)) : -1;
+}
+
+int arvn_altura(Arvn * a)
+{
+	return altura(a->raiz);
+}
+*/

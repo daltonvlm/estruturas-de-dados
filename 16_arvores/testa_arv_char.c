@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "arv.h"
+#include "arv_char.h"
 
 int main(void)
 {
@@ -10,19 +10,9 @@ int main(void)
 						arv_criano('d', NULL, NULL)),
 				     arv_criano('c',
 						arv_criano('e', NULL, NULL),
-						arv_criano('f', NULL, NULL))
-			  )
-	    );
+						arv_criano('f', NULL, NULL))));
 	arv_imprime(a);
-
-	puts("");
-	if (arv_pertence(a, 'b')) {
-		ArvNo *no = arv_busca(a, 'b');
-		if (no) {
-			puts("encontrado");
-		}
-	}
-
+	printf("Altura da arvore: %d\n", arv_altura(a));
 	arv_libera(a);
 	return 0;
 }
