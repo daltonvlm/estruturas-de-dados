@@ -42,10 +42,6 @@
  * 		e usando uma pilha auxiliar.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "pilha_float.h"
-
 float topo(Pilha * p)
 {
 	if (pilha_vazia(p)) {
@@ -108,50 +104,4 @@ Pilha *copia_pilha_rec(Pilha * p)
 	Pilha *cpy = pilha_cria();
 	copia(cpy, p);
 	return cpy;
-}
-
-int main(void)
-{
-	Pilha *p1, *p2, *cpy;
-	float v;
-
-	p1 = pilha_cria();
-	p2 = pilha_cria();
-	for (int i = 0; i < 10; i++) {
-		if (i < 5) {
-			pilha_push(p1, i);
-		} else {
-			pilha_push(p2, i);
-		}
-	}
-
-	v = topo(p1);
-	printf("Topo de p1: %f\n", v);
-
-	puts("\nPilhas originais:");
-	puts("p1:");
-	pilha_imprime(p1);
-	puts("\np2:");
-	pilha_imprime(p2);
-
-	concatena_pilhas_rec(p1, p2);
-	puts("\nConcatena");
-	puts("p1:");
-	pilha_imprime(p1);
-	puts("\np2:");
-	pilha_imprime(p2);
-
-	cpy = copia_pilha_rec(p1);
-	puts("\nCopia");
-	puts("p1:");
-	pilha_imprime(p1);
-	puts("\np2:");
-	pilha_imprime(p2);
-	puts("\ncpy:");
-	pilha_imprime(cpy);
-
-	pilha_libera(p1);
-	pilha_libera(p2);
-	pilha_libera(cpy);
-	return 0;
 }

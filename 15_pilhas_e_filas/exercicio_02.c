@@ -25,10 +25,6 @@
  *		void combina_filas (Fila* f_res, Fila* f1, Fila* f2);
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "fila_float.h"
-
 void combina_filas(Fila * f_res, Fila * f1, Fila * f2)
 {
 	while (!fila_vazia(f1) && !fila_vazia(f2)) {
@@ -41,29 +37,4 @@ void combina_filas(Fila * f_res, Fila * f1, Fila * f2)
 	while (!fila_vazia(f2)) {
 		fila_insere(f_res, fila_retira(f2));
 	}
-}
-
-int main(void)
-{
-	Fila *f1 = fila_cria();
-	Fila *f2 = fila_cria();
-	Fila *f_res = fila_cria();
-	for (int i = 0; i < 15; i++) {
-		if (i < 6) {
-			fila_insere(f1, i);
-		} else {
-			fila_insere(f2, i);
-		}
-	}
-	puts("f1:");
-	fila_imprime(f1);
-	puts("f2:");
-	fila_imprime(f2);
-	combina_filas(f_res, f1, f2);
-	puts("f_res:");
-	fila_imprime(f_res);
-	fila_libera(f1);
-	fila_libera(f2);
-	fila_libera(f_res);
-	return 0;
 }
