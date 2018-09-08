@@ -7,8 +7,6 @@
  * seja zero.
  */
 
-#include <stdio.h>
-
 int mdc(int x, int y)
 {
 	int r;
@@ -17,15 +15,4 @@ int mdc(int x, int y)
 		y = r;
 	}
 	return y;
-}
-
-int main(void)
-{
-	while (1) {
-		int x, y;
-		printf("\nx, y: ");
-		scanf("%d %d", &x, &y);
-		printf("mdc(%d, %d) = %d\n", x, y, mdc(x, y));
-	}
-	return 0;
 }

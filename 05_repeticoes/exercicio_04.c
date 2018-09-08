@@ -13,9 +13,6 @@
  * |(Xi x Xi) - n| < tol.
  */
 
-#include <stdio.h>
-#include <math.h>
-
 float raiz(float n, float tol)
 {
 	float x = 1;
@@ -23,17 +20,4 @@ float raiz(float n, float tol)
 		x = (x + n / x) / 2;
 	} while (fabs(x * x - n) >= tol);
 	return x;
-}
-
-int main(void)
-{
-	while (1) {
-		float n, tol;
-		printf("n: ");
-		scanf("%f", &n);
-		printf("tol: ");
-		scanf("%f", &tol);
-		printf("raiz = %f\n", raiz(n, tol));
-	}
-	return 0;
 }
