@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+
 int main(void)
 {
 	int escolha;		/* escolha do computador: 0=par, 1=ímpar */
