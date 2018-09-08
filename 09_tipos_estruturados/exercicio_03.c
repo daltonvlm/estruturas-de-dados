@@ -12,10 +12,6 @@
  *          Circ* circ_interno (Ret *r);
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-
 #define min(a,b) ((a) < (b) ? (a) : (b))
 
 typedef struct ret Ret;
@@ -28,18 +24,13 @@ struct circ {
 	float r;
 };
 
-static void check(void *p)
+static void *aloca(size_t n)
 {
+	void *p = malloc(n);
 	if (!p) {
 		perror("Erro");
 		exit(EXIT_FAILURE);
 	}
-}
-
-static void *aloca(size_t n)
-{
-	void *p = malloc(n);
-	check(p);
 	return p;
 }
 
@@ -56,17 +47,4 @@ Circ *circ_interno(Ret * r)
 	Circ *c = (Circ *) aloca(sizeof(Circ));
 	c->r = min(r->b, r->h) / 2;
 	return c;
-}
-
-int main(void)
-{
-	Circ c = { 2.f }, *ci;
-	Ret r = { 3.f, 2.f }, *ri;
-	ri = ret_circunscrito(&c, 1.f);
-	printf("%f %f\n", ri->b, ri->h);
-	free(ri);
-	ci = circ_interno(&r);
-	printf("%f\n", ci->r);
-	free(ci);
-	return 0;
 }
