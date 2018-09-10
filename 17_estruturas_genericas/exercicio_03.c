@@ -14,47 +14,61 @@
 #include <string.h>
 #include "listagen.h"
 
-typedef struct {
-	char *nome;
+typedef struct aluno Aluno;
+struct aluno {
+	char nome[81];
 	float nota;
-} Aluno;
+};
 
-static void insere_aluno(ListaGen * lst, char *nome, float nota)
+static void *imprime(void *info, void *dado)
 {
-	Aluno *a = (Aluno *) malloc(sizeof(Aluno));
-	if (!a) {
-		perror("Erro");
-		exit(EXIT_FAILURE);
-	}
-	a->nome = nome;
-	a->nota = nota;
-	lgen_insere(lst, a);
+	Aluno *a = (Aluno *) info;
+	printf("%s: %.1f\n", a->nome, a->nota);
+	return NULL;
 }
 
-static void *busca_aluno(void *info, void *dado)
+static void *compara_nome(void *info, void *dado)
 {
 	Aluno *a = (Aluno *) info;
 	char *nome = (char *)dado;
 	return strcmp(nome, a->nome) ? NULL : info;
 }
 
+static void insere(ListaGen * lst, char *nome, float nota)
+{
+	Aluno *a = (Aluno *) malloc(sizeof(Aluno));
+	if (!a) {
+		perror("");
+		exit(EXIT_FAILURE);
+	}
+	strcpy(a->nome, nome);
+	a->nota = nota;
+	lgen_insere(lst, a);
+}
+
 int main(void)
 {
+	char nome[81] = "None";
 	Aluno *a;
-	char *nome = "Joao";
 	ListaGen *lst = lgen_cria();
 
-	insere_aluno(lst, "Carlos", 7.5);
-	insere_aluno(lst, "Rui", 8.2);
-	insere_aluno(lst, "Marta", 7.8);
-	insere_aluno(lst, "Ana", 9.3);
-	insere_aluno(lst, "Paulo", 6.5);
+	insere(lst, "Carlos", 7.5);
+	insere(lst, "Rui", 8.2);
+	insere(lst, "Marta", 7.8);
+	insere(lst, "Ana", 9.3);
+	insere(lst, "Paulo", 6.5);
+	lgen_percorre(lst, imprime, NULL);
 
-	a = (Aluno *) lgen_percorre(lst, busca_aluno, nome);
+	printf("\nEntre com o nome para a consulta: ");
+	scanf(" %80[^\n]", nome);
+	printf("\nBuscando por '%s':\n", nome);
+	a = lgen_percorre(lst, compara_nome, nome);
+
 	if (a) {
+		puts("Aluno encontrado:");
 		printf("%s: %.1f\n", a->nome, a->nota);
 	} else {
-		printf("Aluno '%s' nao encontrado.\n", nome);
+		puts("Aluno nao encontrado.");
 	}
 
 	lgen_libera(lst, free);

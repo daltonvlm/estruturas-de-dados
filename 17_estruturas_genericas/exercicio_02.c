@@ -22,39 +22,49 @@ struct aluno {
 	float nota;
 };
 
-static int soma(void *info, void *dado)
+static int imprime_soma(void *info, void *dado)
 {
-	float *s = (float *)dado;
 	Aluno *a = (Aluno *) info;
+	float *s = (float *)dado;
+	printf("%s: %.1f\n", a->nome, a->nota);
 	*s += a->nota;
 	return 0;
 }
 
-static void insere_aluno(VetorGen * v, char *nome, float nota)
+static void insere(VetorGen * vg, char *nome, float nota)
 {
 	Aluno *a = (Aluno *) malloc(sizeof(Aluno));
 	if (!a) {
-		perror("Erro");
+		perror("");
 		exit(EXIT_FAILURE);
 	}
 	strcpy(a->nome, nome);
 	a->nota = nota;
-	vgen_insere(v, a);
+	vgen_insere(vg, a);
 }
 
 int main(void)
 {
-	float m;
-	VetorGen *v = vgen_cria();
+	float m = 0;
+	float nota;
+	char nome[81];
+	VetorGen *vg = vgen_cria();
 
-	insere_aluno(v, "Carlos", 7.5);
-	insere_aluno(v, "Rui", 8.2);
-	insere_aluno(v, "Marta", 7.8);
-	insere_aluno(v, "Ana", 9.3);
-	insere_aluno(v, "Paulo", 6.5);
-
-	vgen_percorre(v, soma, &m);
-	printf("media = %.1f\n", m / vgen_tam(v));
-	vgen_libera(v, free);
+	puts("Informe nome e nota do aluno (Ctrl+D para encerrar)");
+	while (1) {
+		printf("\nNome: ");
+		if (1 == scanf(" %80[^\n]", nome)) {
+			printf("Nota: ");
+			if (1 == scanf("%f", &nota)) {
+				insere(vg, nome, nota);
+				continue;
+			}
+		}
+		break;
+	}
+	vgen_percorre(vg, imprime_soma, &m);
+	m /= vgen_tam(vg);
+	printf("Media dos alunos: %.1f\n", m);
+	vgen_libera(vg, free);
 	return 0;
 }

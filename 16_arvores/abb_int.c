@@ -57,47 +57,39 @@ static int altura(ArvNo * r)
 
 static void gira_esquerda(ArvNo ** r)
 {
-	if (*r) {
-		ArvNo **p = &(*r)->dir;
-		while (*p && (*p)->esq) {
-			p = &(*p)->esq;
-		}
-		if (*p) {
-			(*p)->esq = *r;
-			if (*p == (*r)->dir) {
-				*r = *p;
-				*p = NULL;
-			} else {
-				ArvNo *t = (*p)->dir;
-				(*p)->dir = (*r)->dir;
-				(*r)->dir = NULL;
-				*r = *p;
-				*p = t;
-			}
-		}
+	ArvNo **p = &(*r)->dir;
+	while ((*p)->esq) {
+		p = &(*p)->esq;
+	}
+	(*p)->esq = *r;
+	if (*p == (*r)->dir) {
+		*r = *p;
+		*p = NULL;
+	} else {
+		ArvNo *t = (*p)->dir;
+		(*p)->dir = (*r)->dir;
+		(*r)->dir = NULL;
+		*r = *p;
+		*p = t;
 	}
 }
 
 static void gira_direita(ArvNo ** r)
 {
-	if (*r) {
-		ArvNo **p = &(*r)->esq;
-		while (*p && (*p)->dir) {
-			p = &(*p)->dir;
-		}
-		if (*p) {
-			(*p)->dir = *r;
-			if (*p == (*r)->esq) {
-				*r = *p;
-				*p = NULL;
-			} else {
-				ArvNo *t = (*p)->esq;
-				(*p)->esq = (*r)->esq;
-				(*r)->esq = NULL;
-				*r = *p;
-				*p = t;
-			}
-		}
+	ArvNo **p = &(*r)->esq;
+	while ((*p)->dir) {
+		p = &(*p)->dir;
+	}
+	(*p)->dir = *r;
+	if (*p == (*r)->esq) {
+		*r = *p;
+		*p = NULL;
+	} else {
+		ArvNo *t = (*p)->esq;
+		(*p)->esq = (*r)->esq;
+		(*r)->esq = NULL;
+		*r = *p;
+		*p = t;
 	}
 }
 

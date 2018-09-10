@@ -10,72 +10,70 @@
 #include <string.h>
 #include "arvgen.h"
 
-typedef struct {
+typedef struct aluno Aluno;
+struct aluno {
 	char nome[81];
 	float nota;
-} Aluno;
+};
 
-static void insere_aluno(ArvGen * a, char *nome, float nota)
+static int aluno_cmp_nota_dec(void *chave, void *info)
+{
+	float *nota = (float *)chave;
+	Aluno *aluno = (Aluno *) info;
+	// return aluno->nota - *nota;
+	if (*nota <= aluno->nota) {
+		return 1;
+	}
+	return 0;
+}
+
+static int imprime_maiores(void *info, void *dado)
+{
+	Aluno *aluno = (Aluno *) info;
+	float *nota = (float *)dado;
+	if (aluno->nota > *nota) {
+		printf("%s: %.1f\n", aluno->nome, aluno->nota);
+	}
+	return 0;
+}
+
+static void insere(ArvGen * a, char *nome, float nota)
 {
 	Aluno *aluno = (Aluno *) malloc(sizeof(Aluno));
 	if (!aluno) {
-		perror("Erro");
+		perror("");
 		exit(EXIT_FAILURE);
 	}
 	strcpy(aluno->nome, nome);
 	aluno->nota = nota;
-	agen_insere(a, &nota, aluno);
-}
-
-static int cmp_nota(void *chave, void *info)
-{
-	float *nota = (float *)chave;
-	Aluno *aluno = (Aluno *) info;
-	if (*nota < aluno->nota) {
-		return 1;
-	}
-	return -1;
-}
-
-static int imprime(void *info, void *dado)
-{
-	Aluno *a = (Aluno *) info;
-	printf("%s: %.1f\n", a->nome, a->nota);
-	return 0;
-}
-
-static int imprime_maior8(void *info, void *dado)
-{
-	Aluno *a = (Aluno *) info;
-	if (a->nota > 8) {
-		printf("%s: %.1f\n", a->nome, a->nota);
-	}
-	return 0;
+	agen_insere(a, &aluno->nota, aluno);
 }
 
 int main(void)
 {
-	ArvGen *a = agen_cria(cmp_nota);
+	float nota;
+	char nome[81];
+	ArvGen *a = agen_cria(aluno_cmp_nota_dec);
 
-	insere_aluno(a, "Carlos", 7.5);
-	insere_aluno(a, "Rui", 8.2);
-	insere_aluno(a, "Marta", 7.8);
-	insere_aluno(a, "Ana", 9.3);
-	insere_aluno(a, "Paulo", 6.5);
-	insere_aluno(a, "Pedro", 5.0);
-	insere_aluno(a, "Paulo", 3.0);
-	insere_aluno(a, "João", 4.0);
-	insere_aluno(a, "Matues", 2.0);
-	insere_aluno(a, "Marcos", 1.0);
-	insere_aluno(a, "Mariana", 8.0);
-	insere_aluno(a, "Juliana", 6.0);
-	insere_aluno(a, "Cristiane", 7.0);
-	insere_aluno(a, "Tais", 9.0);
-	insere_aluno(a, "Fernanda", 10);
+	puts("Informe nome e nota do aluno (Ctrl+D para encerrar)");
+	while (1) {
+		printf("\nNome: ");
+		if (1 == scanf(" %80[^\n]", nome)) {
+			printf("Nota: ");
+			if (1 == scanf("%f", &nota)) {
+				insere(a, nome, nota);
+				continue;
+			}
+		}
+		break;
+	}
+	nota = -1;
+	puts("\nAlunos cadastrados:");
+	agen_percorre(a, imprime_maiores, &nota);
 
-	agen_percorre(a, imprime, NULL);
-	puts("");
-	agen_percorre(a, imprime_maior8, NULL);
+	nota = 8;
+	printf("\nAlunos com notas maiores que %.1f\n", nota);
+	agen_percorre(a, imprime_maiores, &nota);
 
 	agen_libera(a, free);
 	return 0;

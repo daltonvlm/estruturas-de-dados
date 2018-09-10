@@ -12,15 +12,33 @@ struct aluno {
 static int cmp_nome_aluno(void *chave, void *info)
 {
 	char *nome = (char *)chave;
-	Aluno *a = (Aluno *) info;
-	return strcmp(nome, a->nome);
+	Aluno *aluno = (Aluno *) info;
+	return strcmp(nome, aluno->nome);
+}
+
+static int cb_imprime(void *info, void *dado)
+{
+	Aluno *aluno = (Aluno *) info;
+	printf("%s: %.1f\n", aluno->nome, aluno->nota);
+	return 0;
+}
+
+static int cb_imprime_primeiros(void *info, void *dado)
+{
+	int *pn = (int *)dado;
+	Aluno *aluno = (Aluno *) info;
+	if (!(*pn)--) {
+		return 1;
+	}
+	printf("%s: %.1f\n", aluno->nome, aluno->nota);
+	return 0;
 }
 
 static void insere_aluno(ArvGen * a, char *nome, float nota)
 {
 	Aluno *aluno = (Aluno *) malloc(sizeof(Aluno));
 	if (!aluno) {
-		perror("Erro");
+		perror("");
 		exit(EXIT_FAILURE);
 	}
 	strcpy(aluno->nome, nome);
@@ -28,32 +46,38 @@ static void insere_aluno(ArvGen * a, char *nome, float nota)
 	agen_insere(a, nome, aluno);
 }
 
-static int cb_imprime(void *info, void *dado)
+static void popula(ArvGen * a)
 {
-	int *pn = (int *)dado;
-	if (!(*pn)--) {
-		return 1;
+	char nome[81];
+	puts("\nInserindo alunos:");
+	while (1) {
+		printf("\nEntre com o nome: ");
+		if (scanf(" %80[^\n]", nome) != 1) {
+			break;
+		}
+		insere_aluno(a, nome, 6);
 	}
-	Aluno *a = (Aluno *) info;
-	printf("%s: %.1f\n", a->nome, a->nota);
-	return 0;
+}
+
+static void esvazia(ArvGen * a)
+{
+	char nome[81];
+	puts("\nRetirando elementos:");
+	while (1) {
+		agen_percorre(a, cb_imprime, NULL);
+		printf("\nEntre com o nome: ");
+		if (scanf(" %80[^\n]", nome) != 1) {
+			break;
+		}
+		agen_retira(a, nome, free);
+	}
 }
 
 int main(void)
 {
-	int n = 2;
 	ArvGen *a = agen_cria(cmp_nome_aluno);
-
-	insere_aluno(a, "Carlos", 7.5);
-	insere_aluno(a, "Rui", 8.2);
-	insere_aluno(a, "Marta", 7.8);
-	insere_aluno(a, "Ana", 9.3);
-	insere_aluno(a, "Paulo", 6.5);
-
-	Aluno *p = (Aluno *) agen_busca(a, "Rui");
-	printf("%g\n", p->nota);
-
-	agen_percorre(a, cb_imprime, &n);
+	popula(a);
+	esvazia(a);
 	agen_libera(a, free);
 	return 0;
 }
