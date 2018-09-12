@@ -52,93 +52,18 @@ struct palavra {
 	char s[NPAL];
 };
 
-typedef struct vetpalavra VetPalavra;
-struct vetpalavra {
+typedef struct vetor Vetor;
+struct vetor {
 	int n;
 	int dim;
 	Palavra **v;
 };
 
-static int cb_hash(void *key)
-{
-	char *s = (char *)key;
-	int h = 0;
-	for (int i = 0; s[i]; i++) {
-		h += s[i];
-	}
-	return h;
-}
-
-static void cb_libera(void *v1, void *v2)
-{
-	free(v2);
-}
-
-static int cb_cmp_palavra(const void *v1, const void *v2)
-{
-	Palavra **p1 = (Palavra **) v1;
-	Palavra **p2 = (Palavra **) v2;
-
-	int dif = (*p2)->n - (*p1)->n;
-
-	if (!dif) {
-		return strcmp((*p1)->s, (*p2)->s);
-	}
-	return dif;
-}
-
-static void *cb_insere(void *k, void *v, void *d)
-{
-	Palavra *p = (Palavra *) v;
-	VetPalavra *vp = (VetPalavra *) d;
-
-	if (vp->n < vp->dim) {
-		vp->v[vp->n++] = p;
-		return NULL;
-	}
-	return d;
-}
-
-static void *aloca(size_t n)
-{
-	void *p = malloc(n);
-	if (!p) {
-		perror("Erro");
-		exit(EXIT_FAILURE);
-	}
-	return p;
-}
-
-static void imprime(int np, HashGen * tab)
-{
-	VetPalavra *vp = (VetPalavra *) aloca(sizeof(VetPalavra));
-	vp->n = 0;
-	vp->dim = np;
-	vp->v = (Palavra **) aloca(vp->dim * sizeof(Palavra *));
-
-	hgen_percorre(tab, cb_insere, vp);
-	qsort(vp->v, np, sizeof(Palavra *), cb_cmp_palavra);
-
-	for (int i = 0; i < np; i++) {
-		printf("%s = %d\n", vp->v[i]->s, vp->v[i]->n);
-	}
-
-	free(vp->v);
-	free(vp);
-}
-
-static int cb_cmp_string(void *v1, void *v2)
-{
-	char *k = (char *)v1;
-	char *s = (char *)v2;
-	return strcmp(k, s);
-}
-
-static int le_arquivo(FILE * fp, char *s)
+static int le_palavra(FILE * f, char *s)
 {
 	int i = 0;
-	int c;
-	while ((c = fgetc(fp)) != EOF) {
+	char c;
+	while ((c = fgetc(f)) != EOF) {
 		if (isalpha(c)) {
 			break;
 		}
@@ -147,11 +72,95 @@ static int le_arquivo(FILE * fp, char *s)
 		return 0;
 	}
 	s[i++] = c;
-	while (i < NPAL - 1 && ((c = fgetc(fp)) != EOF) && isalpha(c)) {
+	while (i < NPAL - 1 && (c = fgetc(f)) != EOF && isalpha(c)) {
 		s[i++] = c;
 	}
 	s[i] = '\0';
 	return 1;
+}
+
+static int hash(void *p)
+{
+	char *chave = (char *)p;
+	int h = 0;
+	for (int i = 0; chave[i]; i++) {
+		h += (i + 1) * chave[i];
+	}
+	return h;
+}
+
+static int cmp_chaves(void *p1, void *p2)
+{
+	char *chave_busca = (char *)p1;
+	char *chave_orig = (char *)p2;
+	return strcmp(chave_busca, chave_orig);
+}
+
+static void *aloca(size_t n)
+{
+	void *p = malloc(n);
+	if (!p) {
+		perror("");
+		exit(EXIT_FAILURE);
+	}
+	return p;
+}
+
+static Palavra *acessa(HashGen * tab, char *s)
+{
+	Palavra *p = hgen_busca(tab, s, cmp_chaves);
+	if (!p) {
+		p = (Palavra *) aloca(sizeof(Palavra));
+		p->n = 0;
+		strcpy(p->s, s);
+		hgen_insere(tab, p->s, p, cmp_chaves);
+	}
+	return p;
+}
+
+static void *popula(void *info, void *dado)
+{
+	Palavra *p = (Palavra *) info;
+	Vetor *vet = (Vetor *) dado;
+
+	if (vet->n == vet->dim) {
+		vet->dim *= 2;
+		vet->v =
+		    (Palavra **) realloc(vet->v, vet->dim * sizeof(Palavra *));
+		if (!vet->v) {
+			perror("");
+			exit(EXIT_FAILURE);
+		}
+	}
+	vet->v[vet->n++] = p;
+	return NULL;
+}
+
+static int cmp_palavras(const void *v1, const void *v2)
+{
+	Palavra **p1 = (Palavra **) v1;
+	Palavra **p2 = (Palavra **) v2;
+	if ((*p1)->n == (*p2)->n) {
+		return strcmp((*p1)->s, (*p2)->s);
+	}
+	return (*p2)->n - (*p1)->n;
+}
+
+static void imprime(HashGen * tab)
+{
+	Vetor *palavras = (Vetor *) aloca(sizeof(Vetor));
+	palavras->n = 0;
+	palavras->dim = 4;
+	palavras->v = (Palavra **) aloca(palavras->dim * sizeof(Palavra *));
+
+	hgen_percorre(tab, popula, palavras);
+	qsort(palavras->v, palavras->n, sizeof(Palavra *), cmp_palavras);
+	for (int i = 0; i < palavras->n; i++) {
+		Palavra *p = palavras->v[i];
+		printf("%s: %d\n", p->s, p->n);
+	}
+	free(palavras->v);
+	free(palavras);
 }
 
 int main(int argc, char *argv[])
@@ -160,31 +169,19 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Uso: %s <arquivo>\n", argv[0]);
 		exit(EXIT_FAILURE);
 	}
-
-	char s[NPAL];
-	int np = 0;
-	FILE *fp = fopen(argv[1], "rt");
-	HashGen *tab = hgen_cria(cb_hash);
-
-	if (!fp) {
-		perror("Erro");
+	FILE *f = fopen(argv[1], "rt");
+	if (!f) {
+		perror("");
 		exit(EXIT_FAILURE);
 	}
-
-	while (le_arquivo(fp, s)) {
-		Palavra *p = (Palavra *) hgen_busca(tab, s, cb_cmp_string);
-		if (!p) {
-			np++;
-			p = (Palavra *) aloca(sizeof(Palavra));
-			p->n = 0;
-			strcpy(p->s, s);
-			hgen_insere(tab, p->s, p);
-		}
+	char s[NPAL];
+	HashGen *tab = hgen_cria(hash);
+	while (le_palavra(f, s)) {
+		Palavra *p = acessa(tab, s);
 		p->n++;
 	}
-	fclose(fp);
-
-	imprime(np, tab);
-	hgen_libera(tab, cb_libera);
+	fclose(f);
+	imprime(tab);
+	hgen_libera(tab, free);
 	return 0;
 }

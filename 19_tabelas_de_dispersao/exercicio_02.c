@@ -32,159 +32,71 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <time.h>
+#include <assert.h>
+#include "hash_int.h"
+#include "vetor_int.h"
 
-typedef struct hash Hash;
-typedef struct elemento Elemento;
+enum tipo { VET, HSH };
 
-struct hash {
-	int n;
-	Elemento **v;
-};
-
-struct elemento {
-	int x;
-	Elemento *prox;
-};
-
-int hash(Hash * tab, int x)
-{
-	return abs(x % tab->n);
+static int cb_hash(int v){
+	return v;
 }
 
-static void check(void *p)
+static int cb_cmp_int(const void *v1, const void *v2)
 {
-	if (!p) {
-		perror("Erro");
-		exit(EXIT_FAILURE);
-	}
+	int *p1 = (int *)v1;
+	int *p2 = (int *)v2;
+	return *p1 - *p2;
 }
 
-static void *aloca(size_t n)
+static double tempo(int n, void *v, enum tipo t)
 {
-	void *p = malloc(n);
-	check(p);
-	return p;
-}
+	time_t t0, t1;
 
-Hash *hash_cria(int n)
-{
-	Hash *tab = (Hash *) aloca(sizeof(Hash));
-	tab->n = 2.0973 * n;
-	tab->v = (Elemento **) aloca(tab->n * sizeof(Elemento *));
-	memset(tab->v, 0, tab->n * sizeof(Elemento *));
-	return tab;
-}
-
-void hash_insere(Hash * tab, int x)
-{
-	int h = hash(tab, x);
-
-	for (Elemento * e = tab->v[h]; e; e = e->prox) {
-		if (e->x == x) {
-			return;
+	srand(0);
+	t0 = clock();
+	for (int i = 0; i < n; i++) {
+		int r = rand();
+		if(VET == t){
+			assert(vet_busca((Vetor*)v,r));
+		}else{
+			assert(hsh_busca((Hash*)v,r));
 		}
 	}
-	Elemento *e = (Elemento *) aloca(sizeof(Elemento));
-	e->x = x;
-	e->prox = tab->v[h];
-	tab->v[h] = e;
-}
-
-int *hash_busca(Hash * tab, int x)
-{
-	int h = hash(tab, x);
-
-	for (Elemento * e = tab->v[h]; e; e = e->prox) {
-		if (e->x == x) {
-			return &e->x;
-		}
-	}
-	return NULL;
-}
-
-void hash_libera(Hash * tab)
-{
-	for (int i = 0; i < tab->n; i++) {
-		Elemento *e = tab->v[i];
-		while (e) {
-			Elemento *t = e;
-			e = e->prox;
-			free(t);
-		}
-	}
-	free(tab->v);
-	free(tab);
-}
-
-static double tempo_hash(int n)
-{
-	Hash *tab = hash_cria(n);
-	clock_t ti, tf;
-
-	srand(0);
-	for (int i = 0; i < n; i++) {
-		hash_insere(tab, rand());
-	}
-
-	srand(0);
-	ti = clock();
-	for (int i = 0; i < n; i++) {
-		int *p = hash_busca(tab, rand());
-		printf("%d\n", *p);
-	}
-	tf = clock();
-	hash_libera(tab);
-
-	return (double)(tf - ti) / CLOCKS_PER_SEC;
-}
-
-static int cmp(const void *v1, const void *v2)
-{
-	int *p = (int *)v1;
-	int *q = (int *)v2;
-	return *p - *q;
-}
-
-static double tempo_vet(int n)
-{
-	int *v = (int *)aloca(n * sizeof(int));
-	clock_t ti, tf;
-
-	srand(0);
-	for (int i = 0; i < n; i++) {
-		v[i] = rand();
-	}
-	qsort(v, n, sizeof(int), cmp);
-
-	srand(0);
-	ti = clock();
-	for (int i = 0; i < n; i++) {
-		printf("%d\n", v[i]);
-	}
-	tf = clock();
-	free(v);
-
-	return (double)(tf - ti) / CLOCKS_PER_SEC;
+	t1 = clock();
+	return (double)(t1 - t0) / CLOCKS_PER_SEC;
 }
 
 int main(void)
 {
-	int min = 100;
-	int max = 1001;
+	int n, min=101, max=997;
+	double t;
+	Hash *hsh;
+	Vetor *vet;
 
-	while (1) {
+	while (1) { 
 		srand(time(NULL));
+		n = (rand() % (max - min + 1)) + min;
+		hsh = hsh_cria(2 * n,cb_hash);
+		vet = vet_cria(n, cb_cmp_int);
 
-		int n = rand() % (max - min) + min;
-		double thash = tempo_hash(n);
-		double tvet = tempo_vet(n);
+		srand(0);
+		for (int i = 0; i < n; i++) {
+			int r = rand();
+			vet_insere(vet,r);
+			hsh_insere(hsh, r);
+		}
+		vet_ordena(vet);
 
-		printf("Tempo de busca de %d elementos:\n", n);
-		printf("Hash: %f segundos.\n", thash);
-		printf("Vetor: %f segundos.\n", tvet);
+		t = tempo(n, vet,VET);
+		printf("Tempo de busca em vetor para %d elementos: %f\n", n, t);
+		t = tempo(n, hsh,HSH);
+		printf("Tempo de busca em hash para %d elementos: %f\n", n, t);
 		getchar();
+
+		hsh_libera(hsh);
+		vet_libera(vet);
 	}
 	return 0;
 }
