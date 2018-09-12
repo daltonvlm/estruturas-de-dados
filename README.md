@@ -4,4 +4,4 @@ Dos autores Waldemar Celes, Renato Cerqueira e José Rangel.
 
 Por uma questão de organização, todo o código foi formatado no padrão linux com a ferramenta indent.
 
-indent -linux *.[hc] && rm *~
+indent -linux *.[hc]
