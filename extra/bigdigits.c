@@ -59,20 +59,16 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Usage: bigdigits <number>\n");
 		exit(EXIT_FAILURE);
 	}
-
 	char *number = argv[1];
 	int dim = 80;
 	char *line = (char *)malloc(dim * sizeof(char) + 1);
-
 	check(line);
 
 	for (int row = 0; row < ROWS; row++) {
 		line[0] = '\0';
-
 		for (int col = 0; col < strlen(number); col++) {
 			int i = get_int(number, col);
 			char **digit = digits[i];
-
 			if (strlen(line) + strlen(digit[row]) > dim) {
 				dim *= 2;
 				line =
@@ -80,13 +76,11 @@ int main(int argc, char *argv[])
 						    dim * sizeof(char) + 1);
 				check(line);
 			}
-
 			strcat(line, digit[row]);
 			strcat(line, "  ");
 		}
 		puts(line);
 	}
-
 	free(line);
 	return 0;
 }
